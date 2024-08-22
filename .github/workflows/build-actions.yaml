@@ -1,0 +1,29 @@
+name: curryware-yahoo-api Build
+on: [push]
+jobs:
+  build-dotnet-project:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+      - name: Build api-project
+        run: dotnet build curryware-yahoo-api/curryware-yahoo-api.csproj --configuration Release
+      - name: Build api-project-tests
+        run: dotnet build curryware-yahoo-api-tests/curryware-yahoo-api-tests.csproj --configuration Release
+      - name: Run tests
+        run: dotnet test curryware-yahoo-api-tests/curryware-yahoo-api-tests.csproj
+        
+      # Run Datadog software composition analysis
+#      - name: Datadog SCA
+#        id: datadog-software-composition-analysis
+#        uses: DataDog/datadog-sca-github-action@main
+#        with:
+#          dd_api_key: ${{ secrets.DD_API_KEY }}
+#          dd_app_key: ${{ secrets.DD_APP_KEY }}
+#          dd_env: ci
+#          dd_service: curryware-front-end
+#          dd_site: datadoghq.com
