@@ -12,6 +12,7 @@ FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
 RUN dotnet publish "curryware-yahoo-api.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
+# Final output
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
