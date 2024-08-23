@@ -34,7 +34,7 @@ jobs:
       - name: Build and Push
         uses: docker/build-push-action@v6
         with:
-          context: "{{defaultContext}}:curryware-yahoo-api"
+          context: curryware-yahoo-api/.
           platforms: linux/amd64,linux/arm64/v8
           push: true
           # Don't forget to set the IMAGE_NAME environment variable.
