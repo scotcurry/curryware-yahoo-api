@@ -8,7 +8,7 @@ ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 RUN dotnet restore "curryware-yahoo-api.csproj"
 COPY . .
-WORKDIR "/src/curryware-yahoo-api"
+WORKDIR "/src"
 RUN dotnet build "curryware-yahoo-api.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
