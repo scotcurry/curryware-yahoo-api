@@ -1,5 +1,8 @@
 using Xunit;
 
+using Serilog;
+using Serilog.Formatting.Json;
+
 using curryware_yahoo_api.HandlerClasses;
 using curryware_yahoo_api.FirebaseOAuthCallHandler;
 using curryware_yahoo_api.XMLParsers;
@@ -12,9 +15,23 @@ public class LeagueSettingsTest
     [Fact]
     public async Task GetLeagueInfoParserTest()
     {
+        
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console(new JsonFormatter())
+            .CreateLogger(); ;
+        
         var xmlUrl = "league/423.l.661655/settings";
         var oauthToken = await FirebaseOAuthCall.GetOAuthTokenFromFirebase();
-        var playersXml = await HttpRequestHandler.MakeYahooApiCall(xmlUrl, oauthToken);
+
+        var playersXml = string.Empty;
+        try
+        {
+            playersXml = await HttpRequestHandler.MakeYahooApiCall(xmlUrl, oauthToken);
+        }
+        catch (HttpRequestException requestException)
+        {
+            Log.Error(requestException.Message);
+        }
 
         var leagueParserCall = new LeagueSettingsParser();
         var leagueNameInfo = leagueParserCall.GetLeagueName(playersXml);
