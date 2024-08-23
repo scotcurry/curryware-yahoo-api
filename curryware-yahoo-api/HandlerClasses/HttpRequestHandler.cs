@@ -1,5 +1,8 @@
 using System.Web;
 
+using Serilog;
+using Serilog.Formatting.Json;
+
 namespace curryware_yahoo_api.HandlerClasses;
 
 public class HttpRequestHandler

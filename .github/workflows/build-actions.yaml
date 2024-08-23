@@ -17,13 +17,31 @@ jobs:
       - name: Run tests
         run: dotnet test curryware-yahoo-api-tests/curryware-yahoo-api-tests.csproj
         
-      # Run Datadog software composition analysis
-#      - name: Datadog SCA
-#        id: datadog-software-composition-analysis
-#        uses: DataDog/datadog-sca-github-action@main
-#        with:
-#          dd_api_key: ${{ secrets.DD_API_KEY }}
-#          dd_app_key: ${{ secrets.DD_APP_KEY }}
-#          dd_env: ci
-#          dd_service: curryware-front-end
-#          dd_site: datadoghq.com
+      # Needed for Docker Build Environment
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-actions@v3
+        
+      # Login to Docker
+      - name: Login to Docker
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_AUTH_TOKEN }}
+          
+      # Push container to Docker Hub
+      - name: Build and Push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64/v8
+          push: true
+          # Don't forget to set the IMAGE_NAME environment variable.
+          tags: scotcurry4/curryware-yahoo-api:${{ github.run_number}}
+          labels: |
+            org.opencontainers.image.source=github.com/scotcurry/curryware-yahoo-api
+            org.opencontainers.image.revision=${{ github.sha }}
+            tags.datadoghq.com/env=prod
+            tags.datadoghq.com/version=${{ github.run_number }}
+            tags.datadoghq.com/service=curryware-yahoo-api

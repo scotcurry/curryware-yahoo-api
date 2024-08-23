@@ -1,0 +1,24 @@
+schema-version: v2.2
+dd-service: curryware-yahoo-api
+team: curryware-team
+application: curryware-yahoo-api
+tier: "1"
+type: web
+lifecycle: "production"
+languages:
+  - dotnet
+contacts: 
+  - type: slack
+    contact: https://currywareinc.slack.com/archives/C07HRHYJSVD
+  - type: email
+    contact: scurry@curryware.org
+links:
+  - name: Source
+    type: repo
+    provider: github
+    url: https://github.com/scotcurry/curryware-yahoo-api
+  - name: Documentation
+    type: doc
+    url: https://curryware.atlassian.net/wiki/spaces/currywarey/pages/86179841/Project+Overview
+ci-pipeline-fingerprints:
+  - 2EklPSLCOYs3
