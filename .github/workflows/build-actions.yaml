@@ -46,3 +46,15 @@ jobs:
             tags.datadoghq.com/env=prod
             tags.datadoghq.com/version=${{ github.run_number }}
             tags.datadoghq.com/service=curryware-yahoo-api
+      
+      # Check out the K8s manifest files for updating
+      - name: Get manifest files
+        uses: actions/checkout@v4
+        with:
+          repository: '$https://github.com/scotcurry/k8-manifests'
+          path: 'k8-manifests'
+      - run: |
+          echo $GITHUB_WORKSPACE
+          ls $GITHUB_WORKSPACE
+          cat $GITHUB_WORKSPACE/k8-manifests
+      # sed pattern to update manifest versions - 's/version: \"[[:digit:]]*\"/|version: \"20\"/g'
