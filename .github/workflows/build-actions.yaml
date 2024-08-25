@@ -51,7 +51,7 @@ jobs:
       - name: Get manifest files
         uses: actions/checkout@v4
         with:
-          repository: 'https://github.com/scotcurry/k8-manifests'
+          repository: 'scotcurry/k8-manifests'
           path: 'k8-manifests'
       - run: |
           echo $GITHUB_WORKSPACE
