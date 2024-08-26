@@ -59,5 +59,7 @@ jobs:
           echo ${{ github.workspace }}
           ls ${{ github.workspace }}
           cat ${{ github.workspace }}/k8-manifests/curryware-yahoo-api-deployment.yaml
-      # sed pattern to update manifest versions - 's/version: \"[[:digit:]]*\"/|version: \"20\"/g'
-      # Site to test sed commands - https://sed.js.org/
+          # sed pattern to update manifest versions - 's/version: \"[[:digit:]]*\"/version: \"20\"/g'
+          # Site to test sed commands - https://sed.js.org/
+          sed -i -e 's/version: \"[[:digit:]]*\"/|version: \"21\"/g' ${{ github.workspace }}/k8-manifests/curryware-yahoo-api-deployment.yaml
+      
