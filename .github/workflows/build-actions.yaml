@@ -53,6 +53,8 @@ jobs:
         with:
           repository: 'scotcurry/k8-manifests'
           path: 'k8-manifests'
+          token: ${{ secrets.GH_ACCESS_TOKEN }}
+          ref: 'main'
       - run: |
           echo $GITHUB_WORKSPACE
           ls $GITHUB_WORKSPACE
