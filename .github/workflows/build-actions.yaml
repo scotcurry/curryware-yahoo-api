@@ -52,12 +52,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: 'scotcurry/k8-manifests'
-          path: 'k8-manifests'
+          path: '${{ runner.temp }}/k8-manifests'
           token: ${{ secrets.GH_ACCESS_TOKEN }}
           ref: 'main'
       - run: |
-          echo $GITHUB_WORKSPACE
-          ls $GITHUB_WORKSPACE
-          cat $GITHUB_WORKSPACE/k8-manifests
+          echo ${{ runner_temp }}
+          ls ${{ runner_temp }}
+          cat ${{ runner_temp }}/k8-manifests/curryware-yahoo-api-deployment.yaml
       # sed pattern to update manifest versions - 's/version: \"[[:digit:]]*\"/|version: \"20\"/g'
       # Site to test sed commands - https://sed.js.org/
