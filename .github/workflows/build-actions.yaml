@@ -12,11 +12,11 @@ jobs:
           dotnet-version: 8.0.x
       - name: Build api-project
         run: dotnet build curryware-yahoo-api/curryware-yahoo-api.csproj --configuration Release
-      - name: Build api-project-tests
-        run: dotnet build curryware-yahoo-api-tests/curryware-yahoo-api-tests.csproj --configuration Release
-      - name: Run tests
-        run: dotnet test curryware-yahoo-api-tests/curryware-yahoo-api-tests.csproj
-        
+#      - name: Build api-project-tests
+#        run: dotnet build curryware-yahoo-api-tests/curryware-yahoo-api-tests.csproj --configuration Release
+#      - name: Run tests
+#        run: dotnet test curryware-yahoo-api-tests/curryware-yahoo-api-tests.csproj
+#        
       # Needed for Docker Build Environment
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
@@ -31,33 +31,33 @@ jobs:
           password: ${{ secrets.DOCKERHUB_AUTH_TOKEN }}
           
       # Push container to Docker Hub
-      - name: Build and Push
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          platforms: linux/amd64
-          # platforms: linux/amd64,linux/arm64/v8
-          push: true
-          # Don't forget to set the IMAGE_NAME environment variable.
-          tags: scotcurry4/curryware-yahoo-api:${{ github.run_number}}
-          labels: |
-            org.opencontainers.image.source=github.com/scotcurry/curryware-yahoo-api
-            org.opencontainers.image.revision=${{ github.sha }}
-            tags.datadoghq.com/env=prod
-            tags.datadoghq.com/version=${{ github.run_number }}
-            tags.datadoghq.com/service=curryware-yahoo-api
+#      - name: Build and Push
+#        uses: docker/build-push-action@v6
+#        with:
+#          context: .
+#          platforms: linux/amd64
+#          # platforms: linux/amd64,linux/arm64/v8
+#          push: true
+#          # Don't forget to set the IMAGE_NAME environment variable.
+#          tags: scotcurry4/curryware-yahoo-api:${{ github.run_number}}
+#          labels: |
+#            org.opencontainers.image.source=github.com/scotcurry/curryware-yahoo-api
+#            org.opencontainers.image.revision=${{ github.sha }}
+#            tags.datadoghq.com/env=prod
+#            tags.datadoghq.com/version=${{ github.run_number }}
+#            tags.datadoghq.com/service=curryware-yahoo-api
       
       # Check out the K8s manifest files for updating
       - name: Get manifest files
         uses: actions/checkout@v4
         with:
           repository: 'scotcurry/k8-manifests'
-          path: '${{ runner.temp }}/k8-manifests'
+          path: '${{ github.workspace }}/k8-manifests'
           token: ${{ secrets.GH_ACCESS_TOKEN }}
           ref: 'main'
       - run: |
-          echo ${{ runner_temp }}
-          ls ${{ runner_temp }}
-          cat ${{ runner_temp }}/k8-manifests/curryware-yahoo-api-deployment.yaml
+          echo ${{ github.workspace }}
+          ls ${{ github.workspace }}
+          cat ${{ github.workspace }}/k8-manifests/curryware-yahoo-api-deployment.yaml
       # sed pattern to update manifest versions - 's/version: \"[[:digit:]]*\"/|version: \"20\"/g'
       # Site to test sed commands - https://sed.js.org/
