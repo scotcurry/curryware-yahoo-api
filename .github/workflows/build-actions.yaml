@@ -67,7 +67,7 @@ jobs:
           echo 'Setting Version: ${{ github.run_number }}'
           sed -i -e 's/version: \"[[:digit:]]*\"/version: \"${{ github.run_number }}\"/g' ${{ github.workspace }}/k8s-manifests/curryware-fantasy/curryware-yahoo-api-deployment.yaml
           echo 'Updating image version'
-          sed -i -e 's/scotcurry4\/curryware-yahoo-api\:[[:digit:]]*/scotcurry4\/curryware-yahoo-api\:${{ github.run_number }}/g' ${{ github.workspace }}/k8-manifests/curryware-front-end-deployment.yaml
+          sed -i -e 's/scotcurry4\/curryware-yahoo-api\:[[:digit:]]*/scotcurry4\/curryware-yahoo-api\:${{ github.run_number }}/g' ${{ github.workspace }}/k8s-manifests/curryware-front-end-deployment.yaml
           cat ${{ github.workspace }}/k8s-manifests/curryware-fantasy/curryware-yahoo-api-deployment.yaml
           echo "Committed curryware-yahoo-api $(date +"%Y-%m-%d %T") - Short SHA: ${{ github.sha }}" > commit_file.txt
           git config user.name "scotcurry"
