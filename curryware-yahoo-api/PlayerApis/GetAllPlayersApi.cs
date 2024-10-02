@@ -1,5 +1,5 @@
 using curryware_yahoo_api.HandlerClasses;
-using curryware_yahoo_api.XMLParsers.LeaguePlayers;
+using curryware_yahoo_api.XMLParsers.LeagueSettingsParser.LeaguePlayers;
 
 namespace curryware_yahoo_api.PlayerApis;
 

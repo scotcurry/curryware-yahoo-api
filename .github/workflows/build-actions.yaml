@@ -16,6 +16,9 @@ jobs:
 #        run: dotnet build curryware-yahoo-api-tests/curryware-yahoo-api-tests.csproj --configuration Release
 #      - name: Run tests
 #        run: dotnet test curryware-yahoo-api-tests/curryware-yahoo-api-tests.csproj
+      
+      - name: Setup Node for Quality Gateway check
+        run: curl -L --fail "https://github.com/DataDog/datadog-ci/releases/latest/download/datadog-ci_linux-x64" --output "/usr/local/bin/datadog-ci" && chmod +x /usr/local/bin/datadog-ci
 #        
       # Needed for Docker Build Environment
       - name: Setup QEMU
@@ -57,9 +60,15 @@ jobs:
           ref: 'main'
       - run: |
           echo ${{ github.workspace }}
+          cd ${{ github.workspace }}/k8-manifests
           ls ${{ github.workspace }}
           # sed pattern to update manifest versions - 's/version: \"[[:digit:]]*\"/version: \"20\"/g'
           # Site to test sed commands - https://sed.js.org/
-          sed -i -e 's/version: \"[[:digit:]]*\"/|version: \"21\"/g' ${{ github.workspace }}/k8-manifests/curryware-yahoo-api-deployment.yaml
+          sed -i -e 's/version: \"[[:digit:]]*\"/version: \"${{ github.run_number }}\"/g' ${{ github.workspace }}/k8-manifests/curryware-yahoo-api-deployment.yaml
+          sed -i -e 's/scotcurry4\/curryware-yahoo-api\:[[:digit:]]*/scotcurry4\/curryware-yahoo-api\:${{ github.run_number }}/g'
           cat ${{ github.workspace }}/k8-manifests/curryware-yahoo-api-deployment.yaml
-      
+          echo "Committed curryware-yahoo-api $(date +"%Y-%m-%d %T") - Short SHA: ${{ github.sha }}" > commit_file.txt
+          git config user.name "scotcurry"
+          git config user.email "scotcurry4@gmail.com"
+          git commit -F commit_file.txt
+          git push

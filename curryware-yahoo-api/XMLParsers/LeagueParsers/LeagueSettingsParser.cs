@@ -1,7 +1,7 @@
 using System.Xml.Linq;
 using curryware_yahoo_api.LeagueSettingsModel;
 
-namespace curryware_yahoo_api.XMLParsers;
+namespace curryware_yahoo_api.XMLParsers.LeagueParsers;
 
 public class LeagueSettingsParser
 {

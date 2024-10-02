@@ -5,7 +5,7 @@ using Serilog.Formatting.Json;
 
 using curryware_yahoo_api.HandlerClasses;
 using curryware_yahoo_api.FirebaseOAuthCallHandler;
-using curryware_yahoo_api.XMLParsers;
+using curryware_yahoo_api.XMLParsers.LeagueParsers;
 using curryware_yahoo_api.LeagueApis;
 
 namespace curryware_yahoo_api_tests;
