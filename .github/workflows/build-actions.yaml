@@ -64,9 +64,9 @@ jobs:
           ls ${{ github.workspace }}
           # sed pattern to update manifest versions - 's/version: \"[[:digit:]]*\"/version: \"20\"/g'
           # Site to test sed commands - https://sed.js.org/
-          sed -i -e 's/version: \"[[:digit:]]*\"/version: \"${{ github.run_number }}\"/g' ${{ github.workspace }}/k8-manifests/curryware-yahoo-api-deployment.yaml
+          sed -i -e 's/version: \"[[:digit:]]*\"/version: \"${{ github.run_number }}\"/g' ${{ github.workspace }}/k8s-manifests/curryware-yahoo-api-deployment.yaml
           sed -i -e 's/scotcurry4\/curryware-yahoo-api\:[[:digit:]]*/scotcurry4\/curryware-yahoo-api\:${{ github.run_number }}/g'
-          cat ${{ github.workspace }}/k8-manifests/curryware-yahoo-api-deployment.yaml
+          cat ${{ github.workspace }}/k8s-manifests/curryware-yahoo-api-deployment.yaml
           echo "Committed curryware-yahoo-api $(date +"%Y-%m-%d %T") - Short SHA: ${{ github.sha }}" > commit_file.txt
           git config user.name "scotcurry"
           git config user.email "scotcurry4@gmail.com"
