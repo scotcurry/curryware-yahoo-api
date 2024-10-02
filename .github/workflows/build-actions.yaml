@@ -72,5 +72,5 @@ jobs:
           echo "Committed curryware-yahoo-api $(date +"%Y-%m-%d %T") - Short SHA: ${{ github.sha }}" > commit_file.txt
           git config user.name "scotcurry"
           git config user.email "scotcurry4@gmail.com"
-          git commit -F commit_file.txt
+          git commit -a -F commit_file.txt
           git push
