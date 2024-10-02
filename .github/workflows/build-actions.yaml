@@ -54,13 +54,13 @@ jobs:
       - name: Get manifest files
         uses: actions/checkout@v4
         with:
-          repository: 'scotcurry/k8-manifests'
-          path: '${{ github.workspace }}/k8-manifests'
+          repository: 'scotcurry/k8s-manifests'
+          path: '${{ github.workspace }}/k8s-manifests'
           token: ${{ secrets.GH_ACCESS_TOKEN }}
           ref: 'main'
       - run: |
           echo ${{ github.workspace }}
-          cd ${{ github.workspace }}/k8-manifests
+          cd ${{ github.workspace }}/k8s-manifests
           ls ${{ github.workspace }}
           # sed pattern to update manifest versions - 's/version: \"[[:digit:]]*\"/version: \"20\"/g'
           # Site to test sed commands - https://sed.js.org/
