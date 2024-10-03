@@ -14,6 +14,14 @@ jobs:
         run: dotnet build curryware-yahoo-api/curryware-yahoo-api.csproj --configuration Release
       - name: Build api-project-tests
         run: dotnet build curryware-yahoo-api-tests/curryware-yahoo-api-tests.csproj --configuration Release
+        
+      # Datadog Test Visibility
+      - name: Configure Datadog Test Visibility
+        uses: datadog/test-visibility-github-action@v2
+        with:
+          languages: dotnet
+          service: curryware-yahoo-api
+          api_key: ${{ secrets.DD_API_KEY }}
       - name: Run tests
         run: dotnet test curryware-yahoo-api-tests/curryware-yahoo-api-tests.csproj
       
