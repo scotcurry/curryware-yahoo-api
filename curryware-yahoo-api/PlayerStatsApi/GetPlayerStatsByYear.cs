@@ -5,10 +5,14 @@ namespace curryware_yahoo_api.PlayerStatsApi;
 
 public class GetPlayerStatsByYear
 {
-    private int _playerCount;
     private int _pageNumber;
     private bool _havePlayersToRetrieve = true;
     private readonly string _allPlayerEndpoint = "league/{game_number}.l.{team_number}/players/stats";
+
+    public GetPlayerStatsByYear(int pageNumber)
+    {
+        _pageNumber = pageNumber;
+    }
 
     public async Task<PlayerStatModel> GetPlayerStats(int gameNumber, int teamNumber, string oauthToken)
     {
