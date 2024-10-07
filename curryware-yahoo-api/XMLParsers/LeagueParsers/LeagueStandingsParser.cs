@@ -1,6 +1,8 @@
 using System.Xml;
 using System.Xml.Linq;
 using curryware_yahoo_api.TeamModels;
+using Serilog;
+using Serilog.Formatting.Json;
 
 namespace curryware_yahoo_api.XMLParsers.LeagueParsers;
 
@@ -8,10 +10,29 @@ public class LeagueStandingsParser
 {
     public List<LeagueStandingsTeamModel> GetLeagueStandings(string xmlPayload)
     {
-        var xmlDoc = XDocument.Parse(xmlPayload);
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console(new JsonFormatter())
+            .CreateLogger();
+        
+        var leagueStandings = new List<LeagueStandingsTeamModel>();
+        try
+        {
+            var xmlDoc = XDocument.Parse(xmlPayload);
+            leagueStandings = ParseLeaguesStandings(xmlDoc);
+        }
+        catch (XmlException xmlException)
+        {
+            throw new XmlException("Failed to parse league standings", xmlException);
+        }
+        
+        return leagueStandings;
+    }
+
+    private List<LeagueStandingsTeamModel> ParseLeaguesStandings(XDocument xmlDoc)
+    {
         XNamespace fantasyNameSpace = "http://fantasysports.yahooapis.com/fantasy/v2/base.rng";
         var standingsNode = xmlDoc.Root?.Descendants(fantasyNameSpace + "standings");
-        
+
         var leagueStandings = new List<LeagueStandingsTeamModel>();
 
         if (standingsNode != null)
@@ -24,16 +45,16 @@ public class LeagueStandingsParser
                 {
                     if (currentElement.Name.LocalName == "name")
                         leagueStandingsTeamModel.TeamName = currentElement.Value;
-                    
+
                     if (currentElement.Name.LocalName == "team_key")
                         leagueStandingsTeamModel.TeamKey = currentElement.Value;
-                    
+
                     if (currentElement.Name.LocalName == "team_logos")
                     {
                         var logoSizeElement = currentElement.Descendants(fantasyNameSpace + "url");
                         leagueStandingsTeamModel.TeamLogo = logoSizeElement.FirstOrDefault()?.Value;
                     }
-                    
+
                     if (currentElement.Name.LocalName == "managers")
                     {
                         var managerNameElement = currentElement.Descendants(fantasyNameSpace + "nickname");
@@ -42,50 +63,36 @@ public class LeagueStandingsParser
                         leagueStandingsTeamModel.ManagerImageUrl = managerImageElement.FirstOrDefault()?.Value;
                         var managerFeloScoreElement = currentElement.Descendants(fantasyNameSpace + "felo_score");
                         var feloValue = managerFeloScoreElement.FirstOrDefault()?.Value;
-                        if (feloValue != null)
-                            leagueStandingsTeamModel.ManagerFeloScore = Int32.Parse(feloValue);
-                        else
-                            leagueStandingsTeamModel.ManagerFeloScore = 0;
+                        leagueStandingsTeamModel.ManagerFeloScore = feloValue != null ? Int32.Parse(feloValue) : 0;
                     }
 
                     if (currentElement.Name.LocalName == "team_points")
                     {
                         var totalPointsElement = currentElement.Descendants(fantasyNameSpace + "total");
                         var totalPointsValue = totalPointsElement.FirstOrDefault()?.Value;
-                        if (totalPointsValue != null)
-                            leagueStandingsTeamModel.TeamTotalPoints = decimal.Parse(totalPointsValue);
-                        else
-                            leagueStandingsTeamModel.TeamTotalPoints = 0;
+                        leagueStandingsTeamModel.TeamTotalPoints = totalPointsValue != null ? decimal.Parse(totalPointsValue) : 0;
                     }
 
                     if (currentElement.Name.LocalName == "team_standings")
                     {
                         var winsElement = currentElement.Descendants(fantasyNameSpace + "wins");
                         var totalWinsValue = winsElement.FirstOrDefault()?.Value;
-                        if (totalWinsValue != null)
-                            leagueStandingsTeamModel.TeamWins = Int32.Parse(totalWinsValue);
-                        else
-                            leagueStandingsTeamModel.TeamWins = 0;
-                        
+                        leagueStandingsTeamModel.TeamWins = totalWinsValue != null ? Int32.Parse(totalWinsValue) : 0;
+
                         var lossesElement = currentElement.Descendants(fantasyNameSpace + "losses");
                         var totalLossesValue = lossesElement.FirstOrDefault()?.Value;
-                        if (totalLossesValue != null)
-                            leagueStandingsTeamModel.TeamLosses = Int32.Parse(totalLossesValue);
-                        else
-                            leagueStandingsTeamModel.TeamLosses = 0;
-                        
+                        leagueStandingsTeamModel.TeamLosses = totalLossesValue != null ? Int32.Parse(totalLossesValue) : 0;
+
                         var rankElement = currentElement.Descendants(fantasyNameSpace + "rank");
                         var rankValue = rankElement.FirstOrDefault()?.Value;
-                        if (rankValue != null)
-                            leagueStandingsTeamModel.TeamRank = Int32.Parse(rankValue);
-                        else
-                            leagueStandingsTeamModel.TeamRank = 0;
+                        leagueStandingsTeamModel.TeamRank = rankValue != null ? Int32.Parse(rankValue) : 0;
                     }
                 }
+
                 leagueStandings.Add(leagueStandingsTeamModel);
             }
+
         }
-        
         return leagueStandings;
     }
 }
