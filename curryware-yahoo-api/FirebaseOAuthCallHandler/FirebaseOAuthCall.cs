@@ -13,7 +13,7 @@ public class FirebaseOAuthCall
             .WriteTo.Console(new JsonFormatter())
             .CreateLogger();
         
-        var gcpUri = "https://us-central1-currywareff.cloudfunctions.net/curryware-firebase-auth";
+        var gcpUri = "https://curryware-firebase-auth-gcp-399646747702.us-central1.run.app/get_oauth_token";
 
         using var client = new HttpClient();
         var response = await client.GetAsync(gcpUri);

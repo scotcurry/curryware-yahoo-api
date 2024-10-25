@@ -1,9 +1,11 @@
+using curryware_yahoo_api.FirebaseOAuthCallHandler;
 using curryware_yahoo_api.JsonHandlers;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Serilog.Formatting.Json;
 using curryware_yahoo_api.OAuthModels;
 using curryware_yahoo_api.TeamApis;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace curryware_yahoo_api.Controllers;
 
@@ -23,20 +25,27 @@ public class YahooApiController : Controller
         return "Controller Result";
     }
 
-    [HttpPost]
-    public IActionResult GetLeagueInfo([FromBody] OAuthTokenModel oauthToken)
+    [HttpGet]
+    [Route("GetOAuthToken")]
+    public async Task<IActionResult> GetOAuthToken()
     {
-
-        var oauthTokenValue = oauthToken.OAuthToken;
 
         Log.Logger = new LoggerConfiguration()
             .WriteTo.Console(new JsonFormatter())
             .CreateLogger();
-        
-        
-        var tokenToLog = oauthTokenValue?.Substring(0, 10);
-        Log.Information("OAuth Token Value: " + tokenToLog);
-        return Ok();
+        try
+        {
+            var oauthTokenValue = await FirebaseOAuthCall.GetOAuthTokenFromFirebase();
+            var tokenToLog = oauthTokenValue?.Substring(0, 10);
+            Log.Information("OAuth token retrieved from Firebase: " + tokenToLog + "...");
+            return Ok(oauthTokenValue);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            Log.Error(e, "GetOAuthToken failed: " + e.Message);
+            return Ok("Error");
+        }
     }
 
     [HttpGet]
