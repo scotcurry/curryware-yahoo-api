@@ -3,9 +3,7 @@ using curryware_yahoo_api.JsonHandlers;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Serilog.Formatting.Json;
-using curryware_yahoo_api.OAuthModels;
 using curryware_yahoo_api.TeamApis;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace curryware_yahoo_api.Controllers;
 
@@ -33,10 +31,12 @@ public class YahooApiController : Controller
         Log.Logger = new LoggerConfiguration()
             .WriteTo.Console(new JsonFormatter())
             .CreateLogger();
+        
+        Log.Information("Calling Get OAuth Token");
         try
         {
             var oauthTokenValue = await FirebaseOAuthCall.GetOAuthTokenFromFirebase();
-            var tokenToLog = oauthTokenValue?.Substring(0, 10);
+            var tokenToLog = oauthTokenValue.Substring(0, 10);
             Log.Information("OAuth token retrieved from Firebase: " + tokenToLog + "...");
             return Ok(oauthTokenValue);
         }
