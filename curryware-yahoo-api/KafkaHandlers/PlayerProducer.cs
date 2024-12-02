@@ -15,7 +15,7 @@ public class PlayerProducer
          var bootStrapServer = Environment.GetEnvironmentVariable("KAFKA_BOOTSTRAP_SERVER");
          if (bootStrapServer == null)
          {
-             bootStrapServer = "localhost:9092";
+             bootStrapServer = "ubuntu-postgres.curryware.org:9092";
          }
          
          Log.Information("Kafka Bootstrap Server: {bootstrapServer}", bootStrapServer);
@@ -27,7 +27,7 @@ public class PlayerProducer
              ClientId = "SendPlayerData"
          };
 
-         Guid guid = new Guid();
+         Guid guid = Guid.NewGuid();
          var key = "key_" + guid;
          var message = new Message<string, string>
          {
@@ -38,8 +38,14 @@ public class PlayerProducer
          var topicExists = GetValidateTopicExists(topic);
          if (!topicExists)
          {
-             Log.Error("Topic does not exist");
-             return false;
+             Log.Error("Topic does not exist, building topic " + topic);
+             var createResult = await KafkaAdmin.CreateTopic(topic);
+             Log.Information("Create Result: {createResult}", createResult);
+             if (createResult == false)
+             {
+                 Log.Error("Failed to create topic");
+                 return false;
+             }
          }
          
          var producer = new ProducerBuilder<string, string>(config).Build();

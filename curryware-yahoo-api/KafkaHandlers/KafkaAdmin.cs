@@ -8,7 +8,7 @@ public class KafkaAdmin
     public List<string> GetTopics()
     {
         var bootStrapServers = Environment.GetEnvironmentVariable("KAFKA_BOOTSTRAP_SERVER") ??
-                               "127.0.0.1:9092";
+                               "ubuntu-postgres.curryware.org:9092";
         var adminConfig = new AdminClientConfig()
         {
             BootstrapServers = bootStrapServers
@@ -21,9 +21,9 @@ public class KafkaAdmin
         return topicNames;
     }
 
-    public async Task CreateTopic(string topicName)
+    public static async Task<bool> CreateTopic(string topicName)
     {
-        var bootStrapServers = Environment.GetEnvironmentVariable("KAFKA_BOOTSTRAP_SERVER") ?? "127.0.0.1:9092";
+        var bootStrapServers = Environment.GetEnvironmentVariable("KAFKA_BOOTSTRAP_SERVER") ?? "ubuntu-postgres.curryware.org:9092";
 
         // This is another way to build the config to pass in.  AdminClientConfig takes a dictionary of strings.
         // var adminConfig = new Dictionary<string, string>
@@ -32,6 +32,7 @@ public class KafkaAdmin
         // };
         var adminConfigDict = new Dictionary<string, string> {{"bootstrap.servers", bootStrapServers}};
         var adminConfig = new AdminClientConfig(adminConfigDict);
+        var topicCreated = false;
         
         // The AdminClientBuilder builds an iAdminClient (https://docs.confluent.io/platform/current/clients/confluent-kafka-dotnet/_site/api/Confluent.Kafka.IAdminClient.html).
         // This code is going to call CreateTopicAsync (https://docs.confluent.io/platform/current/clients/confluent-kafka-dotnet/_site/api/Confluent.Kafka.IAdminClient.html#Confluent_Kafka_IAdminClient_CreateTopicsAsync_Confluent_Kafka_TopicSpecification_System_Threading_CancellationToken_)
@@ -46,10 +47,13 @@ public class KafkaAdmin
         try
         {
             await adminClient.CreateTopicsAsync(new List<TopicSpecification> {topicSpecification});
+            topicCreated = true;
         }
         catch (CreateTopicsException e)
         {
             Console.WriteLine($"Failed to create topic: {e.Error.Reason}");
         }
+        
+        return topicCreated;
     }
 }

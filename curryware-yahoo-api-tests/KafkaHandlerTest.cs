@@ -13,20 +13,13 @@ public class KafkaHandlerTest
         var topicsList = kafkaAdmin.GetTopics();
         Assert.True(topicsList.Count > 0);
     }
-
-    [Fact]
-    public async Task KafkaCreateTopicTest()
-    {
-        var topicName = "PlayerInfo";
-        var kafkaAdmin = new KafkaAdmin();
-        await kafkaAdmin.CreateTopic(topicName);
-    }
-
+    
     [Fact]
     public async Task CreatePlayerMessageTest()
     {
         var topicName = "PlayerTopic";
-        var returnValue = await PlayerProducer.SendPlayerData(topicName, "Scot");
+        var dateString = DateTime.Now.ToString( "MM/dd/yyyy hh:mm:ss tt");
+        var returnValue = await PlayerProducer.SendPlayerData(topicName, "Scot" + dateString);
         Assert.True(returnValue);
     }
 } 

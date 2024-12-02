@@ -1,5 +1,6 @@
 using curryware_yahoo_api.FirebaseOAuthCallHandler;
 using curryware_yahoo_api.JsonHandlers;
+using curryware_yahoo_api.PlayerApis;
 using Microsoft.AspNetCore.Mvc;
 using Serilog;
 using Serilog.Formatting.Json;
@@ -67,6 +68,31 @@ public class YahooApiController : Controller
             var jsonHandler = new DictionaryJsonHandler();
             var json = jsonHandler.DictionaryToJsonString(leagueStandings);
             return Ok(json);
+        }
+        catch (HttpRequestException ex)
+        {
+            Log.Error(ex, "HttpRequestException: " + ex.Message);
+            return Unauthorized();
+        }
+    }
+    
+    [HttpGet]
+    [Route("GetAllPlayers")]
+    public async Task<IActionResult> GetLeagueInfo()
+    {
+        var gameId = 449;
+        var leagueId = 483521;
+    
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console(new JsonFormatter())
+            .CreateLogger();
+
+        try
+        {
+            var token = await FirebaseOAuthCall.GetOAuthTokenFromFirebase();
+            var playersApi = new GetAllPlayersApi();
+            var totalPlayers = await playersApi.GetAllPlayers(gameId, leagueId, token);
+            return Ok(totalPlayers);
         }
         catch (HttpRequestException ex)
         {
