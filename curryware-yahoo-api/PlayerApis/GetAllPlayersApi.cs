@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Confluent.Kafka;
 using Serilog;
 using Serilog.Formatting.Json;
 
@@ -48,12 +49,23 @@ public class GetAllPlayersApi
                 _pageNumber += 25;
                 _playerCount += playerList.Count;
                 var jsonString = JsonSerializer.Serialize(playerList, jsonOptions);
-                var success = await PlayerProducer.SendPlayerData("PlayerTopic", jsonString);
-                if (!success)
+                try
                 {
-                    Log.Error("Error sending player data to Kafka");
+                    if (!ValidateKafkaSettings.ValidateSettings())
+                    {
+                        var success = await PlayerProducer.SendPlayerData("PlayerTopic", jsonString);
+                        if (!success)
+                        {
+                            Log.Error("Error sending player data to Kafka");
+                        }
+                    }
+
+                    Console.WriteLine("Player Count: " + _playerCount);
                 }
-                Console.WriteLine("Player Count: " + _playerCount);
+                catch (KafkaException kafkaException)
+                {
+                    Log.Error(kafkaException.Message);
+                }
             }
         }
 

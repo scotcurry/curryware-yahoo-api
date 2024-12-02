@@ -4,7 +4,7 @@ using Serilog.Formatting.Json;
 
 namespace curryware_yahoo_api.KafkaHandlers;
 
-public class PlayerProducer
+public static class PlayerProducer
 {
      public static async Task<bool> SendPlayerData(string topic, string value)
      {
@@ -12,12 +12,21 @@ public class PlayerProducer
              .WriteTo.Console(new JsonFormatter())
              .CreateLogger();
          
+         // Check to see if the environment variable even exists.
          var bootStrapServer = Environment.GetEnvironmentVariable("KAFKA_BOOTSTRAP_SERVER");
          if (bootStrapServer == null)
          {
-             bootStrapServer = "ubuntu-postgres.curryware.org:9092";
+             return false;
          }
          
+         // Check to see if the anything is listening on the Kafka port.
+         var kafkaListening = ValidateKafkaSettings.ValidateSettings();
+         if (!kafkaListening)
+         {
+             Log.Error("Kafka Port not open");
+             return false;
+         }
+
          Log.Information("Kafka Bootstrap Server: {bootstrapServer}", bootStrapServer);
          // All the values required for this class are documented at (need to research requirements):
          // https://docs.confluent.io/platform/current/clients/confluent-kafka-dotnet/_site/api/Confluent.Kafka.ProducerConfig.html
@@ -35,7 +44,7 @@ public class PlayerProducer
              Value = value
          };
          
-         var topicExists = GetValidateTopicExists(topic);
+         var topicExists = ValidateKafkaSettings.GetValidateTopicExists(topic);
          if (!topicExists)
          {
              Log.Error("Topic does not exist, building topic " + topic);
@@ -55,20 +64,5 @@ public class PlayerProducer
          producer.Flush(TimeSpan.FromSeconds(10));
          Log.Information("Flushing");
          return true;
-     }
-
-     private static bool GetValidateTopicExists(string topicName)
-     {
-         var kafkaAdmin = new KafkaAdmin();
-         var allTopics = kafkaAdmin.GetTopics();
-         var topicExists = false;
-         for (int i = 0; i < allTopics.Count; i++)
-         {
-             var currentTopic = allTopics[i];
-             if (currentTopic != topicName) continue;
-             topicExists = true;
-             i = allTopics.Count;
-         }
-         return topicExists;
      }
 }

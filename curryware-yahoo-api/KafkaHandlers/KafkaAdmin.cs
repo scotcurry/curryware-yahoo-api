@@ -1,14 +1,38 @@
 using Confluent.Kafka;
 using Confluent.Kafka.Admin;
 
+using Serilog;
+using Serilog.Formatting.Json;
+
 namespace curryware_yahoo_api.KafkaHandlers;
 
 public class KafkaAdmin
 {
     public List<string> GetTopics()
     {
-        var bootStrapServers = Environment.GetEnvironmentVariable("KAFKA_BOOTSTRAP_SERVER") ??
-                               "ubuntu-postgres.curryware.org:9092";
+        const string errorString = "NO_ENVIRONMENT_VARIABLE_DEFINED";
+        Log.Logger = new LoggerConfiguration()
+            .WriteTo.Console(new JsonFormatter())
+            .CreateLogger();
+
+        try
+        {
+            ValidateKafkaSettings.ValidateSettings();
+        }
+        catch (KafkaValidationException kafkaException)
+        {
+            Log.Error(kafkaException.Message);
+            throw;
+        }
+        
+        var bootStrapServers = Environment.GetEnvironmentVariable("KAFKA_BOOTSTRAP_SERVER");
+        if (bootStrapServers == null)
+        {
+            Log.Error(errorString);
+            var errorList = new List<string> { errorString };
+            return errorList;
+        }
+
         var adminConfig = new AdminClientConfig()
         {
             BootstrapServers = bootStrapServers
