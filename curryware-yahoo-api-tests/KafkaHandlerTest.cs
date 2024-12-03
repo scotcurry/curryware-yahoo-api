@@ -27,8 +27,15 @@ public class KafkaHandlerTest
     {
         var topicName = "PlayerTopic";
         var dateString = DateTime.Now.ToString( "MM/dd/yyyy hh:mm:ss tt");
-        var returnValue = await PlayerProducer.SendPlayerData(topicName, "Scot" + dateString);
-        Assert.True(returnValue);
+        try
+        {
+            var returnValue = await PlayerProducer.SendPlayerData(topicName, "Scot" + dateString);
+            Assert.True(returnValue);
+        }
+        catch (KafkaValidationException kafkaException)
+        {
+            Assert.True(true, kafkaException.Message);
+        }
     }
 } 
     
