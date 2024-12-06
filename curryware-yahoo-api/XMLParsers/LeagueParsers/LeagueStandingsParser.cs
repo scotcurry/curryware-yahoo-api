@@ -1,8 +1,7 @@
 using System.Xml;
 using System.Xml.Linq;
+using curryware_yahoo_api.LogHandler;
 using curryware_yahoo_api.TeamModels;
-using Serilog;
-using Serilog.Formatting.Json;
 
 namespace curryware_yahoo_api.XMLParsers.LeagueParsers;
 
@@ -10,10 +9,6 @@ public class LeagueStandingsParser
 {
     public List<LeagueStandingsTeamModel> GetLeagueStandings(string xmlPayload)
     {
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console(new JsonFormatter())
-            .CreateLogger();
-        
         var leagueStandings = new List<LeagueStandingsTeamModel>();
         try
         {
@@ -22,6 +17,7 @@ public class LeagueStandingsParser
         }
         catch (XmlException xmlException)
         {
+            CurrywareLogHandler.AddLog("Failed to parse league standings", LogLevel.Error);
             throw new XmlException("Failed to parse league standings", xmlException);
         }
         

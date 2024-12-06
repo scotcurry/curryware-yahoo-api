@@ -1,9 +1,8 @@
 using curryware_yahoo_api.FirebaseOAuthCallHandler;
 using curryware_yahoo_api.JsonHandlers;
+using curryware_yahoo_api.LogHandler;
 using curryware_yahoo_api.PlayerApis;
 using Microsoft.AspNetCore.Mvc;
-using Serilog;
-using Serilog.Formatting.Json;
 using curryware_yahoo_api.TeamApis;
 
 namespace curryware_yahoo_api.Controllers;
@@ -16,11 +15,7 @@ public class YahooApiController : Controller
     [HttpGet(Name = "CallYahooApi")]
     public ActionResult<String> Index()
     {
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console(new JsonFormatter())
-            .CreateLogger();
-        
-        Log.Information("Call From CallYahooApi");
+        CurrywareLogHandler.AddLog("Controller Result", LogLevel.Information);
         return "Controller Result";
     }
 
@@ -28,23 +23,19 @@ public class YahooApiController : Controller
     [Route("GetOAuthToken")]
     public async Task<IActionResult> GetOAuthToken()
     {
-
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console(new JsonFormatter())
-            .CreateLogger();
-        
-        Log.Information("Calling Get OAuth Token");
+        CurrywareLogHandler.AddLog("Calling Get OAuth Token", LogLevel.Information);
         try
         {
             var oauthTokenValue = await FirebaseOAuthCall.GetOAuthTokenFromFirebase();
             var tokenToLog = oauthTokenValue.Substring(0, 10);
-            Log.Information("OAuth token retrieved from Firebase: " + tokenToLog + "...");
+            CurrywareLogHandler.AddLog("OAuth token retrieved from Firebase: " + tokenToLog + "...", 
+                LogLevel.Information);
             return Ok(oauthTokenValue);
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
-            Log.Error(e, "GetOAuthToken failed: " + e.Message);
+            CurrywareLogHandler.AddLog("GetOAuthToken failed: " + e.Message, LogLevel.Error);
             return Ok("Error");
         }
     }
@@ -56,11 +47,7 @@ public class YahooApiController : Controller
         // Hard-coded for now.  Need to fix
         var gameId = 449;
         var leagueId = 483521;
-    
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console(new JsonFormatter())
-            .CreateLogger();
-    
+        
         try
         {
             var leagueStandingClass = new LeagueStandings();
@@ -71,7 +58,7 @@ public class YahooApiController : Controller
         }
         catch (HttpRequestException ex)
         {
-            Log.Error(ex, "HttpRequestException: " + ex.Message);
+            CurrywareLogHandler.AddLog("HttpRequestException: " + ex.Message, LogLevel.Error);
             return Unauthorized();
         }
     }
@@ -82,10 +69,6 @@ public class YahooApiController : Controller
     {
         var gameId = 449;
         var leagueId = 483521;
-    
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console(new JsonFormatter())
-            .CreateLogger();
 
         try
         {
@@ -96,7 +79,7 @@ public class YahooApiController : Controller
         }
         catch (HttpRequestException ex)
         {
-            Log.Error(ex, "HttpRequestException: " + ex.Message);
+            CurrywareLogHandler.AddLog("HttpRequestException: " + ex.Message, LogLevel.Error);
             return Unauthorized();
         }
     }

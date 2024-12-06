@@ -1,8 +1,6 @@
-using Serilog;
-using Serilog.Formatting.Json;
-
 using curryware_yahoo_api.FirebaseOAuthCallHandler;
 using curryware_yahoo_api.HandlerClasses;
+using curryware_yahoo_api.LogHandler;
 using curryware_yahoo_api.TeamModels;
 using curryware_yahoo_api.XMLParsers.LeagueParsers;
 
@@ -14,10 +12,6 @@ public class LeagueStandings
 
     public async Task<List<LeagueStandingsTeamModel>> GetLeagueStandings(int gameNumber, int teamNumber)
     {
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console(new JsonFormatter())
-            .CreateLogger();
-        
         var oauthToken = await FirebaseOAuthCall.GetOAuthTokenFromFirebase();
         string gameNumberString = gameNumber.ToString();
         string teamNumberString = teamNumber.ToString();
@@ -32,7 +26,8 @@ public class LeagueStandings
         }
         catch (HttpRequestException requestException)
         {
-            Log.Error("Error calling {0}, Error Message: {1}", endpointToCall, requestException.Message);
+            CurrywareLogHandler.AddLog($"Error calling {endpointToCall}, Error Message: {requestException.Message}", 
+                LogLevel.Error);
         }
 
         var leagueStandingsParser = new LeagueStandingsParser();

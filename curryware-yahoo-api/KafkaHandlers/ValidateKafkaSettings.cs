@@ -1,19 +1,13 @@
 using System.Net.Sockets;
-using Serilog;
-using Serilog.Formatting.Json;
-
+using curryware_yahoo_api.LogHandler;
 
 namespace curryware_yahoo_api.KafkaHandlers;
 
-public class ValidateKafkaSettings
+public static class ValidateKafkaSettings
 {
     public static bool ValidateSettings()
     {
-        
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console(new JsonFormatter())
-            .CreateLogger();
-        Log.Information("Validating Kafka Port");
+        CurrywareLogHandler.AddLog("Validating Kafka Port", LogLevel.Information);
         
         var bootStrapServer = Environment.GetEnvironmentVariable("KAFKA_BOOTSTRAP_SERVER");
         if (bootStrapServer == null)
@@ -23,6 +17,7 @@ public class ValidateKafkaSettings
         var host = partsToValidate[0];
         var portString = partsToValidate[1];
         int port = Convert.ToInt32(portString);
+        CurrywareLogHandler.AddLog($"Kafka Host: {host}, Kafka Port: {port}", LogLevel.Information);
         
         try
         {
@@ -32,7 +27,7 @@ public class ValidateKafkaSettings
 
             if (!success)
             {
-                Log.Error("Kafka Port not open");
+                CurrywareLogHandler.AddLog("Kafka Port not open", LogLevel.Error);
                 throw new KafkaValidationException("Kafka Port Not Listening");
             }
 
@@ -41,17 +36,17 @@ public class ValidateKafkaSettings
         }
         catch (ArgumentNullException argumentNull)
         {
-            Log.Error(argumentNull.Message);
+            CurrywareLogHandler.AddLog(argumentNull.Message, LogLevel.Error);
             throw new KafkaValidationException("Argument null!", argumentNull);
         }
         catch (SocketException socketException)
         {
-            Log.Error(socketException.Message);
+            CurrywareLogHandler.AddLog(socketException.Message, LogLevel.Error);
             throw new KafkaValidationException("Socket Exception!", socketException);
         }
         catch (ArgumentException argumentException)
         {
-            Log.Error(argumentException.Message);
+            CurrywareLogHandler.AddLog(argumentException.Message, LogLevel.Error);
             throw new KafkaValidationException("Argument Exception!", argumentException);
         }
     }
@@ -64,10 +59,18 @@ public class ValidateKafkaSettings
         for (int i = 0; i < allTopics.Count; i++)
         {
             var currentTopic = allTopics[i];
-            if (currentTopic != topicName) continue;
-            topicExists = true;
-            i = allTopics.Count;
-        }
+            if (currentTopic != topicName)
+            {
+                topicExists = true;
+                i = allTopics.Count;
+                CurrywareLogHandler.AddLog("Kafka Port Exists", LogLevel.Information);
+            }
+            else
+            {
+                CurrywareLogHandler.AddLog("Kafka Port Doesn't Exists", LogLevel.Error);
+            }
+        } 
+        
         return topicExists;
     }
 }

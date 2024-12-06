@@ -1,6 +1,5 @@
 using Confluent.Kafka;
-using Serilog;
-using Serilog.Formatting.Json;
+using curryware_yahoo_api.LogHandler;
 
 namespace curryware_yahoo_api.KafkaHandlers;
 
@@ -8,18 +7,14 @@ public static class PlayerProducer
 {
      public static async Task<bool> SendPlayerData(string topic, string value)
      {
-         Log.Logger = new LoggerConfiguration()
-             .WriteTo.Console(new JsonFormatter())
-             .CreateLogger();
-         
-         // Check to see if the environment variable even exists.
+        // Check to see if the environment variable even exists.
          var bootStrapServer = string.Empty;
          try
          {
              if (ValidateKafkaSettings.ValidateSettings())
                 bootStrapServer = Environment.GetEnvironmentVariable("KAFKA_BOOTSTRAP_SERVER");
              
-             Log.Information("Kafka Bootstrap Server: {bootstrapServer}", bootStrapServer);
+            CurrywareLogHandler.AddLog("Kafka Bootstrap Server: " + bootStrapServer, LogLevel.Information);
              // All the values required for this class are documented at (need to research requirements):
              // https://docs.confluent.io/platform/current/clients/confluent-kafka-dotnet/_site/api/Confluent.Kafka.ProducerConfig.html
              var config = new ProducerConfig
@@ -39,30 +34,28 @@ public static class PlayerProducer
              var topicExists = ValidateKafkaSettings.GetValidateTopicExists(topic);
              if (!topicExists)
              {
-                 Log.Error("Topic does not exist, building topic " + topic);
+                 CurrywareLogHandler.AddLog("Topic does not exist, building topic " + topic, LogLevel.Information);
                  var createResult = await KafkaAdmin.CreateTopic(topic);
-                 Log.Information("Create Result: {createResult}", createResult);
+                 CurrywareLogHandler.AddLog("Create Result: " + createResult, LogLevel.Information);
                  if (createResult == false)
                  {
-                     Log.Error("Failed to create topic");
+                     CurrywareLogHandler.AddLog("Failed to create topic", LogLevel.Error);
                      return false;
                  }
              }
          
              var producer = new ProducerBuilder<string, string>(config).Build();
              var deliveryReport = await producer.ProduceAsync(topic, message);
-             Log.Information($"Delivered '{deliveryReport.Value}' to '{deliveryReport.TopicPartitionOffset}'");
+             CurrywareLogHandler.AddLog($"Delivered '{deliveryReport.Value}' to '{deliveryReport.TopicPartitionOffset}'", LogLevel.Information);
          
              producer.Flush(TimeSpan.FromSeconds(10));
-             Log.Information("Flushing");
+             CurrywareLogHandler.AddLog("Flushing", LogLevel.Information);
              return true;
          }
          catch (KafkaValidationException kafkaException)
          {
-             Log.Error(kafkaException.Message);
+             CurrywareLogHandler.AddLog(kafkaException.Message, LogLevel.Error);
              throw;
          }
-
-         
      }
 }

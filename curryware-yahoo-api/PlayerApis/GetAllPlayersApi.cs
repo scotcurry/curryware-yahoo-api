@@ -1,11 +1,10 @@
 using System.Text.Json;
 using Confluent.Kafka;
-using Serilog;
-using Serilog.Formatting.Json;
 
 using curryware_yahoo_api.HandlerClasses;
 using curryware_yahoo_api.XMLParsers.LeaguePlayers;
 using curryware_yahoo_api.KafkaHandlers;
+using curryware_yahoo_api.LogHandler;
 
 namespace curryware_yahoo_api.PlayerApis;
 
@@ -20,10 +19,6 @@ public class GetAllPlayersApi
 
     public async Task<int> GetAllPlayers(int gameNumber, int teamNumber, string oauthToken)
     {
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console(new JsonFormatter())
-            .CreateLogger();
-        
         string gameNumberString = gameNumber.ToString();
         string teamNumberString = teamNumber.ToString();
         string endpointToCall = _allPlayerEndpoint.Replace("{game_number}", gameNumberString);
@@ -56,7 +51,7 @@ public class GetAllPlayersApi
                         var success = await PlayerProducer.SendPlayerData("PlayerTopic", jsonString);
                         if (!success)
                         {
-                            Log.Error("Error sending player data to Kafka");
+                            CurrywareLogHandler.AddLog("Error sending player data to Kafka", LogLevel.Error);
                         }
                     }
 
@@ -64,11 +59,12 @@ public class GetAllPlayersApi
                 }
                 catch (KafkaException kafkaException)
                 {
-                    Log.Error(kafkaException.Message);
+                    CurrywareLogHandler.AddLog("Error processing player data: " + kafkaException.Message, LogLevel.Error);
                 }
             }
         }
-
+        
+        CurrywareLogHandler.AddLog("All player count: " + _playerCount, LogLevel.Debug);
         return _playerCount;
     }
 }

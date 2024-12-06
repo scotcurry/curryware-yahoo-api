@@ -1,8 +1,6 @@
 using Confluent.Kafka;
 using Confluent.Kafka.Admin;
-
-using Serilog;
-using Serilog.Formatting.Json;
+using curryware_yahoo_api.LogHandler;
 
 namespace curryware_yahoo_api.KafkaHandlers;
 
@@ -11,24 +9,21 @@ public class KafkaAdmin
     public List<string> GetTopics()
     {
         const string errorString = "NO_ENVIRONMENT_VARIABLE_DEFINED";
-        Log.Logger = new LoggerConfiguration()
-            .WriteTo.Console(new JsonFormatter())
-            .CreateLogger();
-
+        
         try
         {
             ValidateKafkaSettings.ValidateSettings();
         }
         catch (KafkaValidationException kafkaException)
         {
-            Log.Error(kafkaException.Message);
+            CurrywareLogHandler.AddLog(kafkaException.Message, LogLevel.Error);
             throw;
         }
         
         var bootStrapServers = Environment.GetEnvironmentVariable("KAFKA_BOOTSTRAP_SERVER");
         if (bootStrapServers == null)
         {
-            Log.Error(errorString);
+            CurrywareLogHandler.AddLog(errorString, LogLevel.Error);
             var errorList = new List<string> { errorString };
             return errorList;
         }
