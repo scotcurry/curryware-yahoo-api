@@ -44,6 +44,11 @@ public class YahooApiController : Controller
     [Route("GetLeagueStandings")]
     public async Task<IActionResult> GetLeagueStandings()
     {
+        foreach (var header in Request.Headers)
+        {
+            CurrywareLogHandler.AddLog($"{header.Key}: {header.Value}", LogLevel.Information);
+        }
+        
         // Hard-coded for now.  Need to fix
         var gameId = 449;
         var leagueId = 483521;
