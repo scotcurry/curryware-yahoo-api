@@ -59,15 +59,15 @@ public static class ValidateKafkaSettings
         for (int i = 0; i < allTopics.Count; i++)
         {
             var currentTopic = allTopics[i];
-            if (currentTopic != topicName)
+            if (currentTopic == topicName)
             {
                 topicExists = true;
                 i = allTopics.Count;
-                CurrywareLogHandler.AddLog("Kafka Port Exists", LogLevel.Information);
+                CurrywareLogHandler.AddLog("Kafka Topic Exists", LogLevel.Information);
             }
             else
             {
-                CurrywareLogHandler.AddLog("Kafka Port Doesn't Exists", LogLevel.Error);
+                CurrywareLogHandler.AddLog("Kafka Topic Doesn't Exists", LogLevel.Error);
             }
         } 
         

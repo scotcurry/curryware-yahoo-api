@@ -46,7 +46,7 @@ public class GetAllPlayersApi
                 var jsonString = JsonSerializer.Serialize(playerList, jsonOptions);
                 try
                 {
-                    if (!ValidateKafkaSettings.ValidateSettings())
+                    if (ValidateKafkaSettings.ValidateSettings())
                     {
                         var success = await PlayerProducer.SendPlayerData("PlayerTopic", jsonString);
                         if (!success)
@@ -54,8 +54,7 @@ public class GetAllPlayersApi
                             CurrywareLogHandler.AddLog("Error sending player data to Kafka", LogLevel.Error);
                         }
                     }
-
-                    Console.WriteLine("Player Count: " + _playerCount);
+                    CurrywareLogHandler.AddLog("Player Count: " + _playerCount, LogLevel.Information);
                 }
                 catch (KafkaException kafkaException)
                 {
