@@ -25,6 +25,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\curryware-yahoo-api\curryware-yahoo-api.csproj" />
+      <ProjectReference Include="..\curryware-yahoo-parsing-library\curryware-yahoo-parsing-library.csproj" />
     </ItemGroup>
 
 </Project>

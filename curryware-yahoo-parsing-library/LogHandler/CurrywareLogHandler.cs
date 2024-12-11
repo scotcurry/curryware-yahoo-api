@@ -1,8 +1,9 @@
+using Microsoft.Extensions.Logging;
 using Serilog;
 using Serilog.Formatting.Json;
 using Serilog.Formatting.Compact;
 
-namespace curryware_yahoo_api.LogHandler;
+namespace curryware_yahoo_parsing_library.LogHandler;
 
 abstract class CurrywareLogHandler
 {
