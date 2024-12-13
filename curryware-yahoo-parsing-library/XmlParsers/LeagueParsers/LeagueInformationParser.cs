@@ -164,7 +164,6 @@ abstract class LeagueInformationParser
             var serializerOptions = new JsonSerializerOptions
             {
                 WriteIndented = false,
-
             };
 
             var json = JsonSerializer.Serialize(leagueInformation, serializerOptions);
