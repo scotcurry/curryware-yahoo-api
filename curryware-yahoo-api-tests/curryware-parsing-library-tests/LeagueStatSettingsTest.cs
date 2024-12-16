@@ -1,6 +1,7 @@
 using Xunit;
-using curryware_yahoo_parsing_library.LeagueApis;
 using Xunit.Abstractions;
+
+using curryware_yahoo_parsing_library.LeagueApis;
 
 namespace curryware_yahoo_api_tests.curryware_parsing_library_tests;
 
