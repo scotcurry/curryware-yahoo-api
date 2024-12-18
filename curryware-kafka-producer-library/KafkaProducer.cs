@@ -1,3 +1,4 @@
+using System.Net.Mime;
 using Confluent.Kafka;
 using Microsoft.Extensions.Logging;
 
@@ -27,11 +28,22 @@ public abstract class KafkaProducer
 
              Guid guid = Guid.NewGuid();
              var key = "key_" + guid;
+             var valueBytes = System.Text.Encoding.UTF8.GetBytes(value);
+             var valueBase64 = Convert.ToBase64String(valueBytes);
              var message = new Message<string, string>
              {
                  Key = key,
                  Value = value
              };
+
+             // var valueScot = "Scot";
+             // var textBytes = System.Text.Encoding.UTF8.GetBytes(valueScot);
+             // var valueScotBase64 = Convert.ToBase64String(textBytes);
+             // var message = new Message<string, string>
+             // {
+             //     Key = key,
+             //     Value = valueScotBase64
+             // };
          
              var topicExists = ValidateKafkaSettings.GetValidateTopicExists(topic);
              if (!topicExists)

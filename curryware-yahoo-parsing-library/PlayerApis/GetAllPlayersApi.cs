@@ -22,6 +22,11 @@ public abstract class GetAllPlayersApi
         else if (position != "None")
             playerEndpoint += "?position=" + position;
         
+        if (playerEndpoint.Contains("?"))
+            playerEndpoint += "&start=" + startNumber;
+        else
+            playerEndpoint += "?start=" + startNumber;
+        
         CurrywareLogHandler.AddLog("Calling League Information API: " + playerEndpoint, LogLevel.Debug);
 
         var oAuthToken = await FirebaseOAuthCall.GetOAuthTokenFromFirebase();

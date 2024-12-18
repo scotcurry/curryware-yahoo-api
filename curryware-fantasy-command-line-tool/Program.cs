@@ -89,12 +89,21 @@ internal abstract class Program
             if (playersModel == null) continue;
             if (playersModel.Players?.Count < 25)
                 morePlayers = false;
+            startNumber += 25;
 
-            var justPlayers = JsonSerializer.Serialize(playersModel.Players);
-            // TODO:  Start here.  Need to put this in a try catch along with everything else in this method.
-            var kafkaResult = await KafkaProducer.CreateKafkaMessage("PlayerTopic", justPlayers);
-            if (kafkaResult)
-                totalBatches++;
+            try
+            {
+                var justPlayers = JsonSerializer.Serialize(playersModel.Players);
+                Console.WriteLine("Writing Players: " + justPlayers);
+                var kafkaResult = await KafkaProducer.CreateKafkaMessage("PlayerTopic", justPlayers);
+                if (kafkaResult)
+                    totalBatches++;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
         
         return totalBatches;
