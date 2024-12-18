@@ -1,17 +1,26 @@
-﻿using curryware_kafka_command_line.CommandLineHandlers;
-using curryware_kafka_command_line.CommandLineModels;
-using curryware_log_handler;
+﻿using System.Text.Json;
 using Microsoft.Extensions.Logging;
+
+using curryware_kafka_command_line.CommandLineHandlers;
+using curryware_kafka_command_line.CommandLineModels;
+using curryware_yahoo_parsing_library.PlayerApis;
+using curryware_log_handler;
+using curryware_yahoo_parsing_library.PlayerModels;
+using curryware_kafka_producer_library;
 
 namespace curryware_kafka_command_line;
 
 internal abstract class Program
 {
-    public static void Main(string[] args)
+    public static async Task Main(string[] args)
     {
         try
         {
-            var parsedCommandLine = CommandLineParser.ParseCommandLine(args);
+            var totalBatches = 0;
+            var parsedCommandLineObject = CommandLineParser.ParseCommandLine(args);
+            if (parsedCommandLineObject is PlayerCommandLineParameters parsedCommandLine)
+                totalBatches = await RunGetPlayersCommand(parsedCommandLine);
+            CurrywareLogHandler.AddLog($"Wrote {totalBatches} to Kafka queue", LogLevel.Debug);
         }
         catch (InvalidParameterException invalidParameterException)
         {
@@ -19,42 +28,13 @@ internal abstract class Program
             PrintHelp();
             Environment.Exit(120);
         }
-        var gameStatCommandInformation = new GameStatsCommandLineParameters();
-        var playerCommandInformation = new PlayerCommandLineParameters();
-        
+        catch (InvalidOperationException invalidOperationException)
         {
+            CurrywareLogHandler.AddLog(invalidOperationException.Message, LogLevel.Error);
             PrintHelp();
-            Environment.Exit(120);
+            Environment.Exit(130);
         }
-        
-        // var bootStrapServer = "localhost:9092";
-        // var consumerGroup = "curryware-group";
-        // var topic = "PlayerTopic";
-        //
-        // // Standard stuff to set the server that will be used.
-        // var kafkaConfig = new ConsumerConfig
-        // {
-        //     BootstrapServers = bootStrapServer,
-        // };
-        //
-        // // A return handler for produced message.  Will write out error to message written.
-        // Action<DeliveryReport<Null, string>> handler = r =>
-        // {
-        //     Console.WriteLine(!r.Error.IsError
-        //     ? $"Delivered message to '{r.TopicPartitionOffset}': {r.Message.Value}"
-        //     : $"Delivery error: {r.Error.Reason}");;
-        // };
-        //
-        // using var producer = new ProducerBuilder<Null, string>(kafkaConfig).Build();
-        // const string messageString = "[{\"playerID\":1,\"playerName\":\"Scot\"},{\"playerID\":2,\"playerName\":\"Otis\"}]";
-        // var kafkaMessage = new Message<Null, string> { Value = messageString };
-        // producer.Produce(topic, kafkaMessage, handler);
-        // producer.Flush(TimeSpan.FromSeconds(2));
-        //
-        // ConsumeTopic(topic, consumerGroup, bootStrapServer);
     }
-
-    
     
     private static void PrintHelp()
     {
@@ -77,48 +57,46 @@ internal abstract class Program
         Console.WriteLine("\t\t T - Taken");
     }
 
-    // private static void ConsumeTopic(string topic, string consumerGroup, string bootstrapServers)
-    // {
-    //     var kafkaConfig = new ConsumerConfig
-    //     {
-    //         GroupId = consumerGroup,
-    //         BootstrapServers = bootstrapServers,
-    //         AutoOffsetReset = AutoOffsetReset.Earliest
-    //     };
-    //     
-    //     using var consumer = new ConsumerBuilder<Ignore, string>(kafkaConfig).Build();
-    //     
-    //     var cts = new CancellationTokenSource();
-    //     Console.CancelKeyPress += (_, e) => {
-    //         // Prevent the process from terminating.
-    //         e.Cancel = true;
-    //         cts.Cancel();
-    //     };
-    //     
-    //     consumer.Subscribe(topic);
-    //     try
-    //     {
-    //         while (true)
-    //         {
-    //             try
-    //             {
-    //                 var consumeResult = consumer.Consume(cts.Token);
-    //                 if (consumeResult.IsPartitionEOF)
-    //                     continue;
-    //                 if (consumeResult.Message == null)
-    //                     continue;
-    //                 if (consumeResult.Message.Value != null) 
-    //                     Console.WriteLine($"Consumed message '{consumeResult.Message.Value}' at: '{consumeResult.TopicPartitionOffset}'.");
-    //             } catch (ConsumeException e) 
-    //             {
-    //                 Console.WriteLine($"Error occured: {e.Error.Reason}");
-    //             }
-    //         }
-    //     } catch (OperationCanceledException)
-    //     {
-    //         // Ensure the consumer leaves the group cleanly and final offsets are committed.
-    //         Console.WriteLine("Closing consumer.");
-    //         consumer.Close();
-    //     }
-    // }
+    // Because there are only 25 players to a page, this method gets a JSON string with all the players and the
+    // number of players on the page, it then reserialize it with just the players to add it to the Kafka queue.
+    private static async Task<int> RunGetPlayersCommand(PlayerCommandLineParameters playerCommandLineParameters)
+    {
+        var gameId = playerCommandLineParameters.GameId;
+        var leagueId = playerCommandLineParameters.LeagueId;
+        var playerPosition = playerCommandLineParameters.PlayerPosition;
+        var playerStatus = playerCommandLineParameters.PlayerStatus;
+        var startNumber = 0;
+        var totalBatches = 0;
+        var morePlayers = true;
+
+        while (morePlayers)
+        {
+            var playerJson = string.Empty;
+            if (playerPosition != "None" && playerStatus != "None")
+                playerJson = await GetAllPlayersApi.GetAllPlayers(gameId, leagueId, startNumber,
+                    status: playerPosition!, position: playerStatus!);
+            if (playerPosition != "None" && playerStatus == "None")
+                playerJson =
+                    await GetAllPlayersApi.GetAllPlayers(gameId, leagueId, startNumber, status: playerPosition!);
+            if (playerPosition == "None" && playerStatus != "None")
+                playerJson = await GetAllPlayersApi.GetAllPlayers(gameId, leagueId, startNumber, status: "None",
+                    position: playerStatus!);
+            if (playerPosition == "None" && playerStatus == "None")
+                playerJson = await GetAllPlayersApi.GetAllPlayers(gameId, leagueId, startNumber);
+
+            if (playerJson == null) continue;
+            var playersModel = JsonSerializer.Deserialize<PlayersListWithCount>(playerJson);
+            if (playersModel == null) continue;
+            if (playersModel.Players?.Count < 25)
+                morePlayers = false;
+
+            var justPlayers = JsonSerializer.Serialize(playersModel.Players);
+            // TODO:  Start here.  Need to put this in a try catch along with everything else in this method.
+            var kafkaResult = await KafkaProducer.CreateKafkaMessage("PlayerTopic", justPlayers);
+            if (kafkaResult)
+                totalBatches++;
+        }
+        
+        return totalBatches;
+    }
 }

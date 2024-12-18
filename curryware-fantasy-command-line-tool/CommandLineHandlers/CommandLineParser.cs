@@ -25,14 +25,84 @@ public abstract class CommandLineParser
     {
         var playerCommandLineParameters = new PlayerCommandLineParameters
         {
+            LeagueId = -1,
+            GameId = -1,
             PlayerPosition = "None",
             PlayerStatus = "None"
         };
         
+        var totalCommandLineLength = args.Length;
+        var gameIdString = "-g";
+        var leagueIdString = "-l";
         var positionString = "-P";
         var statusString = "-s";
+        var gameIdIndex = Array.IndexOf(args, gameIdString);
+        var leagueIdIndex = Array.IndexOf(args, leagueIdString);
         var positionIndex = Array.IndexOf(args, positionString);
         var statusIndex = Array.IndexOf(args, statusString);
+        
+        // Validate the game ID
+        if (gameIdIndex != -1)
+        {
+            if (gameIdIndex == totalCommandLineLength - 1)
+            {
+                CurrywareLogHandler.AddLog("Game ID was not provided.", LogLevel.Error);
+                Console.WriteLine("A gameID must be provided.");
+                throw new InvalidParameterException("A gameID must be provided.");
+            }
+            
+            var gameIdValue = args[gameIdIndex + 1];
+            if (gameIdValue.Length < 1)
+            {
+                CurrywareLogHandler.AddLog("Game ID was not provided.", LogLevel.Error);
+                throw new InvalidParameterException("A gameID must be provided.");
+            }
+            else
+            {
+                gameIdValue = gameIdValue.Trim();
+                string pattern = @"^\d{3}$";
+                if (!Regex.IsMatch(gameIdValue, pattern))
+                {
+                    CurrywareLogHandler.AddLog("Game ID was not provided.", LogLevel.Error);
+                    Console.WriteLine("Game ID must be a 3 digits.");
+                    throw new InvalidParameterException("Game ID must be a 3 digits.");
+                }
+
+                playerCommandLineParameters.GameId = Convert.ToInt32(gameIdValue);
+            }
+        }
+        
+        // Validate the league ID
+        if (leagueIdIndex != -1)
+        {
+            if (leagueIdIndex == totalCommandLineLength - 1)
+            {
+                CurrywareLogHandler.AddLog("League ID was not provided.", LogLevel.Error);
+                Console.WriteLine("A leagueId must be provided.");
+                throw new InvalidParameterException("A leagueId must be provided.");
+            }
+            
+            var leagueIdValue = args[leagueIdIndex + 1];
+            if (leagueIdValue.Length < 1)
+            {
+                CurrywareLogHandler.AddLog("League ID was not provided.", LogLevel.Error);
+                throw new InvalidParameterException("A leagueId must be provided.");
+            }
+            else
+            {
+                leagueIdValue = leagueIdValue.Trim();
+                var pattern = @"^\d{2,6}$";
+                if (!Regex.IsMatch(leagueIdValue, pattern))
+                {
+                    CurrywareLogHandler.AddLog("League ID was not provided.", LogLevel.Error);
+                    Console.WriteLine("League ID must be between 2 and 6 digits.");
+                    throw new InvalidOptionException("League ID must be between 2 and 6 digits.");
+                }
+
+                playerCommandLineParameters.LeagueId = Convert.ToInt32(leagueIdValue);
+            }
+        }
+
         
         // All the player commands are optional.
         if (positionIndex != -1)

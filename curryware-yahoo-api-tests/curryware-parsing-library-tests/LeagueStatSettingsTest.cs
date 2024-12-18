@@ -12,7 +12,7 @@ public class LeagueStatSettingsTest(ITestOutputHelper output)
     {
         output.WriteLine("Get League Information");
         var leagueInformationApi = new LeagueStatSettingsApi();
-        var leagueJson = await leagueInformationApi.GetLeagueScoringInformation();
+        var leagueJson = await LeagueStatSettingsApi.GetLeagueScoringInformation();
         var leagueKey = leagueJson?.Substring(18, 10);
         Assert.Equal(4494835214, Convert.ToInt64(leagueKey));
     }
