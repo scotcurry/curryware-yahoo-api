@@ -14,6 +14,8 @@ jobs:
         run: dotnet build curryware-yahoo-api/curryware-yahoo-api.csproj --configuration Release
       - name: Build api-project-tests
         run: dotnet build curryware-yahoo-api-tests/curryware-yahoo-api-tests.csproj --configuration Release
+      - name: Build curryware-fantasy-command-line-tool
+        run: dotnet build curryware-fantasy-command-line-tool/curryware-fantasy-command-line-tool.csproj --configuration Release
         
       # Datadog Test Visibility
       - name: Configure Datadog Test Visibility
@@ -45,6 +47,7 @@ jobs:
       - name: Build and Push
         uses: docker/build-push-action@v6
         with:
+          file: ./DockerFileWithCommandLine
           context: .
           platforms: linux/amd64
           # platforms: linux/amd64,linux/arm64/v8
