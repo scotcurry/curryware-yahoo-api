@@ -1,6 +1,5 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
-EXPOSE 8087
 
 # Get the solution and all of the projects copied to the image for build
 COPY *.sln ./
@@ -22,8 +21,10 @@ RUN dotnet publish curryware-fantasy-command-line-tool/curryware-fantasy-command
 # Get a new "cleaner" image to run the application
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
+EXPOSE 8087
 ENV ASPNETCORE_HTTP_PORTS=8087
 
 # Copy the built projects to this image
 COPY --from=build /app/publish .
 COPY --from=build /app/publish/command-line ./command-line
+ENTRYPOINT ["dotnet", "curryware-yahoo-api.dll"]
