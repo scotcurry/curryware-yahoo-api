@@ -48,7 +48,7 @@ public class GetAllPlayersApi
                 {
                     if (ValidateKafkaSettings.ValidateSettings())
                     {
-                        var success = await PlayerProducer.SendPlayerData("PlayerTopic", jsonString);
+                        var success = await PlayerProducer.SendPlayerData("PlayerTopic2", jsonString);
                         if (!success)
                         {
                             CurrywareLogHandler.AddLog("Error sending player data to Kafka", LogLevel.Error);

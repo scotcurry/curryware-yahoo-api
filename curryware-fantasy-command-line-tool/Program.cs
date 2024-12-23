@@ -95,7 +95,7 @@ internal abstract class Program
             {
                 var justPlayers = JsonSerializer.Serialize(playersModel.Players);
                 Console.WriteLine("Writing Players: " + justPlayers);
-                var kafkaResult = await KafkaProducer.CreateKafkaMessage("PlayerTopic", justPlayers);
+                var kafkaResult = await KafkaProducer.CreateKafkaMessage("PlayerTopic2", justPlayers);
                 if (kafkaResult)
                     totalBatches++;
             }

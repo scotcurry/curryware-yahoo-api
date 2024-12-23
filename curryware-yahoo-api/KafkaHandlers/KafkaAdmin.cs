@@ -59,7 +59,7 @@ public class KafkaAdmin
         using var adminClient = new AdminClientBuilder(adminConfig).Build();
         var topicSpecification = new TopicSpecification
         {
-            Name = "PlayerTopic",
+            Name = "PlayerTopic2",
             NumPartitions = 1
         };
 
