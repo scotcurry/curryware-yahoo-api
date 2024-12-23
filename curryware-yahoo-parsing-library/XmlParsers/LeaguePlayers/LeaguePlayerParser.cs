@@ -83,23 +83,16 @@ internal abstract class LeaguePlayerParser
                 if (currentPlayer.Element(fantasyNameSpace + "bye_weeks") != null)
                 {
                     var byeWeekElement = currentPlayer.Element(fantasyNameSpace + "bye_weeks");
-                    if (byeWeekElement!.Element(fantasyNameSpace + "bye_week") != null)
+                    if (byeWeekElement!.Element(fantasyNameSpace + "week") != null)
                     {
-                        byeWeek = int.Parse(byeWeekElement.Element(fantasyNameSpace + "bye_week")!.Value);
+                        byeWeek = int.Parse(byeWeekElement.Element(fantasyNameSpace + "week")!.Value);
                     }
                 }
 
                 if (currentPlayer.Element(fantasyNameSpace + "uniform_number") != null && playerId < defenseIds)
                 {
                     var uniformNumberString = currentPlayer.Element(fantasyNameSpace + "uniform_number")!.Value;
-                    if (uniformNumberString != String.Empty)
-                    {
-                        uniformNumber = int.Parse(currentPlayer.Element(fantasyNameSpace + "uniform_number")!.Value);
-                    }
-                    else
-                    {
-                        uniformNumber = 0;
-                    }
+                    uniformNumber = uniformNumberString != String.Empty ? int.Parse(currentPlayer.Element(fantasyNameSpace + "uniform_number")!.Value) : 0;
                 }
 
                 if (currentPlayer.Element(fantasyNameSpace + "primary_position") != null)
