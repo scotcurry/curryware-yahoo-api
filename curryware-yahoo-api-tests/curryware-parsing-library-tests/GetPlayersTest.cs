@@ -11,7 +11,7 @@ public class GetPlayersTest
     {
         const int gameId = 449;
         const int leagueKey = 483521;
-        const int startNumber = 0;
+        const int startNumber = 930;
 
         var playersApi = await GetAllPlayersApi.GetAllPlayers(gameId, leagueKey, startNumber);
         Assert.True(playersApi?.Length > 0);

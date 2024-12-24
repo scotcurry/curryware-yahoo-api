@@ -19,6 +19,7 @@ public class GetAllPlayersApi
 
     public async Task<int> GetAllPlayers(int gameNumber, int teamNumber, string oauthToken)
     {
+        const string kafkaTopic = "PlayerTopic2";
         string gameNumberString = gameNumber.ToString();
         string teamNumberString = teamNumber.ToString();
         string endpointToCall = _allPlayerEndpoint.Replace("{game_number}", gameNumberString);
@@ -48,7 +49,7 @@ public class GetAllPlayersApi
                 {
                     if (ValidateKafkaSettings.ValidateSettings())
                     {
-                        var success = await PlayerProducer.SendPlayerData("PlayerTopic2", jsonString);
+                        var success = await PlayerProducer.SendPlayerData(kafkaTopic, jsonString);
                         if (!success)
                         {
                             CurrywareLogHandler.AddLog("Error sending player data to Kafka", LogLevel.Error);

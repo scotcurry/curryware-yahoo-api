@@ -61,6 +61,7 @@ internal abstract class Program
     // number of players on the page, it then reserialize it with just the players to add it to the Kafka queue.
     private static async Task<int> RunGetPlayersCommand(PlayerCommandLineParameters playerCommandLineParameters)
     {
+        const string kafkaTopic = "PlayerTopic2";
         var gameId = playerCommandLineParameters.GameId;
         var leagueId = playerCommandLineParameters.LeagueId;
         var playerPosition = playerCommandLineParameters.PlayerPosition;
@@ -95,7 +96,7 @@ internal abstract class Program
             {
                 var justPlayers = JsonSerializer.Serialize(playersModel.Players);
                 Console.WriteLine("Writing Players: " + justPlayers);
-                var kafkaResult = await KafkaProducer.CreateKafkaMessage("PlayerTopic2", justPlayers);
+                var kafkaResult = await KafkaProducer.CreateKafkaMessage(kafkaTopic, justPlayers);
                 if (kafkaResult)
                     totalBatches++;
             }
