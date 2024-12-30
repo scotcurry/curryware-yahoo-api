@@ -26,6 +26,7 @@
     <ItemGroup>
       <ProjectReference Include="..\curryware-fantasy-command-line-tool\curryware-fantasy-command-line-tool.csproj" />
       <ProjectReference Include="..\curryware-kafka-producer-library\curryware-kafka-producer-library.csproj" />
+      <ProjectReference Include="..\curryware-postgres-library\curryware-postgres-library.csproj" />
       <ProjectReference Include="..\curryware-yahoo-api\curryware-yahoo-api.csproj" />
       <ProjectReference Include="..\curryware-yahoo-parsing-library\curryware-yahoo-parsing-library.csproj" />
     </ItemGroup>
