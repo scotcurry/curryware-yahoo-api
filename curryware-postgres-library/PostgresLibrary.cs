@@ -15,7 +15,7 @@ public class PostgresLibrary
             connectionStringBuilder.Host = "ubuntu-postgres.curryware.org";
             connectionStringBuilder.Port = 5432;
             connectionStringBuilder.Username = "scot";
-            connectionStringBuilder.Password = "AirWatch1";
+            connectionStringBuilder.Password = "****";
             connectionStringBuilder.Database = "currywarefantasy";
             var connectionString = connectionStringBuilder.ConnectionString;
             
