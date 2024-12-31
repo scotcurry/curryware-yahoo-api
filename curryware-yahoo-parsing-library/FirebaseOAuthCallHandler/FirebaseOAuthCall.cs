@@ -30,7 +30,7 @@ abstract class FirebaseOAuthCall
                                 validAuthTokenTime;
                 CurrywareLogHandler.AddLog(logString, LogLevel.Information);
                 if (firebaseOAuth.LastUpdateTime <= validAuthTokenTime)
-                    return firebaseOAuth!.AuthToken != null ? firebaseOAuth.AuthToken : "Error";
+                    return firebaseOAuth.AuthToken ?? "Error";
 
                 await Task.Delay(250);
                 responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);

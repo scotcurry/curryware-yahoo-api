@@ -23,6 +23,12 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 EXPOSE 8087
 ENV ASPNETCORE_HTTP_PORTS=8087
+# This should enable Continuous Profiler
+ENV CORECLR_ENABLE_PROFILING=1
+ENV CORECLR_PROFILER={846F5F1C-F9AE-4B07-969E-05C26BC060D8}
+ENV CORECLR_PROFILER_PATH=/opt/datadog/Datadog.Trace.ClrProfiler.Native.so
+ENV DD_DOTNET_TRACER_HOME=/opt/datadog
+ENV LD_PRELOAD=/opt/datadog/continuousprofiler/Datadog.Linux.ApiWrapper.x64.so
 
 # Copy the built projects to this image
 COPY --from=build /app/publish .
