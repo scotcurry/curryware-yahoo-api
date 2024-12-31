@@ -8,14 +8,16 @@ public class PostgresLibrary
 {
     public static async Task<string> GetPlayerIdsByPosition(string position = "QB")
     {
+        var postgresUserName = Environment.GetEnvironmentVariable("POSTGRES_USERNAME");
+        var postgresPassword = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
         var playerList = new List<PlayerModel>();
         try
         {
             var connectionStringBuilder = new NpgsqlConnectionStringBuilder();
             connectionStringBuilder.Host = "ubuntu-postgres.curryware.org";
             connectionStringBuilder.Port = 5432;
-            connectionStringBuilder.Username = "scot";
-            connectionStringBuilder.Password = "****";
+            connectionStringBuilder.Username = postgresUserName;
+            connectionStringBuilder.Password = postgresPassword;
             connectionStringBuilder.Database = "currywarefantasy";
             var connectionString = connectionStringBuilder.ConnectionString;
             

@@ -16,6 +16,8 @@ jobs:
         run: dotnet build curryware-yahoo-api-tests/curryware-yahoo-api-tests.csproj --configuration Release
       - name: Build curryware-fantasy-command-line-tool
         run: dotnet build curryware-fantasy-command-line-tool/curryware-fantasy-command-line-tool.csproj --configuration Release
+      - name: Build curryware-postgres-library
+        run: dotnet build curryware-postgres-library/curryware-postgres-library.csproj --configuration Release
         
       # Datadog Test Visibility
       # TODO:  Need to get this set up to only run the tests that don't have dependencies.
