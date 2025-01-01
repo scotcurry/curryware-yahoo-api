@@ -69,21 +69,21 @@ internal abstract class Program
         var startNumber = 0;
         var totalBatches = 0;
         var morePlayers = true;
+        var oauthToken = "NoToken";
 
         while (morePlayers)
         {
             var playerJson = string.Empty;
             if (playerPosition != "None" && playerStatus != "None")
-                playerJson = await GetAllPlayersApi.GetAllPlayers(gameId, leagueId, startNumber,
-                    status: playerPosition!, position: playerStatus!);
+                playerJson = await GetAllPlayersApi.GetAllPlayers(oauthToken, gameId, leagueId, startNumber, status: playerStatus!,
+                    playerPosition!);
             if (playerPosition != "None" && playerStatus == "None")
                 playerJson =
-                    await GetAllPlayersApi.GetAllPlayers(gameId, leagueId, startNumber, status: playerPosition!);
+                    await GetAllPlayersApi.GetAllPlayers(oauthToken, gameId, leagueId, startNumber, status: playerPosition!);
             if (playerPosition == "None" && playerStatus != "None")
-                playerJson = await GetAllPlayersApi.GetAllPlayers(gameId, leagueId, startNumber, status: "None",
-                    position: playerStatus!);
+                playerJson = await GetAllPlayersApi.GetAllPlayers(oauthToken, gameId, leagueId, startNumber, status: playerStatus!);
             if (playerPosition == "None" && playerStatus == "None")
-                playerJson = await GetAllPlayersApi.GetAllPlayers(gameId, leagueId, startNumber);
+                playerJson = await GetAllPlayersApi.GetAllPlayers(oauthToken, gameId, leagueId, startNumber);
 
             if (playerJson == null) continue;
             var playersModel = JsonSerializer.Deserialize<PlayersListWithCount>(playerJson);
@@ -91,6 +91,8 @@ internal abstract class Program
             if (playersModel.Players?.Count < 25)
                 morePlayers = false;
             startNumber += 25;
+            if (playersModel.OAuthToken == null) continue;
+            oauthToken = playersModel.OAuthToken;
 
             try
             {

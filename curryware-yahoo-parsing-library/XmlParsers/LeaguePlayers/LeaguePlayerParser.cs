@@ -9,7 +9,7 @@ namespace curryware_yahoo_parsing_library.XmlParsers.LeaguePlayers;
 
 internal abstract class LeaguePlayerParser
 {
-    internal static string GetParseLeaguePlayerXml(string xmlPayload)
+    internal static string GetParseLeaguePlayerXml(string xmlPayload, string oauthToken)
     {
         var playersList = new List<PlayerModel>();
         var playersOnPage = 0;
@@ -149,7 +149,8 @@ internal abstract class LeaguePlayerParser
             var playersWithCount = new PlayersListWithCount
             {
                 Players = playersList,
-                PlayerCount = playersOnPage
+                PlayerCount = playersOnPage,
+                OAuthToken = oauthToken,
             };
 
             var json = JsonSerializer.Serialize(playersWithCount, serializerOptions);

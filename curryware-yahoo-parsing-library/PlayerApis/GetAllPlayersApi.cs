@@ -8,7 +8,7 @@ namespace curryware_yahoo_parsing_library.PlayerApis;
 
 public abstract class GetAllPlayersApi
 {
-    public static async Task<string?> GetAllPlayers(int gameId, int leagueId, int startNumber, string status = "None",
+    public static async Task<string?> GetAllPlayers(string oAuthToken, int gameId, int leagueId, int startNumber, string status = "None",
         string position = "None")
     {
         // This is the endpoint for the league information.
@@ -29,10 +29,13 @@ public abstract class GetAllPlayersApi
         
         CurrywareLogHandler.AddLog("Calling League Information API: " + playerEndpoint, LogLevel.Debug);
 
-        var oAuthToken = await FirebaseOAuthCall.GetOAuthTokenFromFirebase();
-        if (oAuthToken.Substring(0, 6) == "Error:")
-            return null;
-        CurrywareLogHandler.AddLog("Got OAuth Token from Firebase", LogLevel.Debug);
+        if (oAuthToken == "NoToken")
+        {
+            oAuthToken = await FirebaseOAuthCall.GetOAuthTokenFromFirebase();
+            if (oAuthToken.Substring(0, 6) == "Error:")
+                return null;
+            CurrywareLogHandler.AddLog("Got OAuth Token from Firebase", LogLevel.Debug);
+        }
 
         var playerInformationXml = await HttpRequestHandler.MakeYahooApiCall(playerEndpoint,
             oAuthToken);
@@ -40,7 +43,7 @@ public abstract class GetAllPlayersApi
             return null;
         CurrywareLogHandler.AddLog("Got League Information XML", LogLevel.Debug);
 
-        var allPlayersJson = LeaguePlayerParser.GetParseLeaguePlayerXml(playerInformationXml);
+        var allPlayersJson = LeaguePlayerParser.GetParseLeaguePlayerXml(playerInformationXml, oAuthToken);
         if (allPlayersJson.Substring(0, 6) == "Error:")
             return null;
 
