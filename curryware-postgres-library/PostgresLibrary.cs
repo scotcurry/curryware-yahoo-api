@@ -4,21 +4,27 @@ using Npgsql;
 
 namespace curryware_postgres_library;
 
-public class PostgresLibrary
+public abstract class PostgresLibrary
 {
     public static async Task<string> GetPlayerIdsByPosition(string position = "QB")
     {
         var postgresUserName = Environment.GetEnvironmentVariable("POSTGRES_USERNAME");
         var postgresPassword = Environment.GetEnvironmentVariable("POSTGRES_PASSWORD");
+        var postgresServer = Environment.GetEnvironmentVariable("POSTGRES_SERVER");
+        var postgresPort = Environment.GetEnvironmentVariable("POSTGRES_PORT");
+        var postgresDatabase = Environment.GetEnvironmentVariable("POSTGRES_DATABASE");
+        
         var playerList = new List<PlayerModel>();
         try
         {
-            var connectionStringBuilder = new NpgsqlConnectionStringBuilder();
-            connectionStringBuilder.Host = "ubuntu-postgres.curryware.org";
-            connectionStringBuilder.Port = 5432;
-            connectionStringBuilder.Username = postgresUserName;
-            connectionStringBuilder.Password = postgresPassword;
-            connectionStringBuilder.Database = "currywarefantasy";
+            var connectionStringBuilder = new NpgsqlConnectionStringBuilder
+            {
+                Host = postgresServer,
+                Port = Convert.ToInt32(postgresPort),
+                Username = postgresUserName,
+                Password = postgresPassword,
+                Database = postgresDatabase
+            };
             var connectionString = connectionStringBuilder.ConnectionString;
             
             await using var dataSource = NpgsqlDataSource.Create(connectionString); 
@@ -27,30 +33,22 @@ public class PostgresLibrary
                 var command = conn.CreateCommand();
                 var commandText = "SELECT player_id, player_season_key, player_name, player_url, ";
                 commandText += "player_team, player_bye_week, player_uniform_number, player_position, player_headshot ";
-                commandText += "FROM player_info";
+                commandText += "FROM player_info WHERE player_position = @position";
                 command.CommandText = commandText;
+                command.Parameters.AddWithValue("position", position);
                 
                 var reader = await command.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {
-                    var byeWeek = await reader.IsDBNullAsync(reader.GetInt32(reader.GetOrdinal("player_bye_week")));
                     var playerId = reader.GetInt32(reader.GetOrdinal("player_id"));
-                    var playerSeasonKey = await reader.IsDBNullAsync(reader.GetOrdinal("player_season_key")) ? 
-                        reader.GetString(reader.GetOrdinal("player_season_key")): null;
-                    var playerName = await reader.IsDBNullAsync(reader.GetOrdinal("player_name")) ?
-                        reader.GetString(reader.GetOrdinal("player_name")): null;
-                    var playerUrl = await reader.IsDBNullAsync(reader.GetOrdinal("player_url"))
-                        ? reader.GetString(reader.GetOrdinal("player_url")) : null;
-                    var playerTeam = await reader.IsDBNullAsync(reader.GetOrdinal("player_team")) ?
-                        reader.GetString(reader.GetOrdinal("player_team")) : null;
-                    var playerByeWeek = await reader.IsDBNullAsync(reader.GetOrdinal("player_bye_week")) ?
-                        reader.GetInt32(reader.GetOrdinal("player_bye_week")) : (int?)null;
-                    var playerUniformNumber = await reader.IsDBNullAsync(reader.GetOrdinal("player_uniform_number")) ?
-                        reader.GetInt32(reader.GetOrdinal("player_uniform_number")) : (int?)null;
-                    var playerPosition = await reader.IsDBNullAsync(reader.GetOrdinal("player_position")) ?
-                        reader.GetString(reader.GetOrdinal("player_position")) : null;
-                    var playerHeadshot = await reader.IsDBNullAsync(reader.GetOrdinal("player_headshot")) ?
-                        reader.GetString(reader.GetOrdinal("player_headshot")) : null;
+                    var playerSeasonKey = reader.GetString(reader.GetOrdinal("player_season_key"));
+                    var playerName = reader.GetString(reader.GetOrdinal("player_name"));
+                    var playerUrl = reader.GetString(reader.GetOrdinal("player_url"));
+                    var playerTeam = reader.GetString(reader.GetOrdinal("player_team"));
+                    var playerByeWeek = reader.GetInt32(reader.GetOrdinal("player_bye_week"));
+                    var playerUniformNumber = reader.GetInt32(reader.GetOrdinal("player_uniform_number"));
+                    var playerPosition = reader.GetString(reader.GetOrdinal("player_position"));
+                    var playerHeadshot = reader.GetString(reader.GetOrdinal("player_headshot"));
 
                     var playerModel = new PlayerModel()
                     {

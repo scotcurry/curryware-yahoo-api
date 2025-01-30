@@ -6,9 +6,9 @@ using Microsoft.Extensions.Logging;
 
 namespace curryware_yahoo_parsing_library.LeagueApis;
 
-public class LeagueStatValueApi
+public abstract class LeagueStatValueApi
 {
-    public async Task<string?> GetLeagueStatValueInformation(int leagueId = 483521, int gameId = 449)
+    public static async Task<string?> GetLeagueStatValueInformation(int gameId = 449, int leagueId = 483521)
     {
         // This is the endpoint for the league information.
         var leagueSettingEndpoint =
@@ -28,7 +28,7 @@ public class LeagueStatValueApi
             return null;
         CurrywareLogHandler.AddLog("Got League Information XML", LogLevel.Debug);
         
-        var leagueStatSValuesJson = LeagueStatValueParser.GetLeagueStatValuesFromXml(leagueInformationXml);
+        var leagueStatSValuesJson = LeagueStatValueParser.GetLeagueStatValuesFromXml(leagueInformationXml, gameId, leagueId);
         if (leagueStatSValuesJson.Substring(0, 6) == "Error:")
             return null;
         CurrywareLogHandler.AddLog("Got League Stat Settings JSON", LogLevel.Debug);

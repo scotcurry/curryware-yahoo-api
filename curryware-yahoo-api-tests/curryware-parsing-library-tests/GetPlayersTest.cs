@@ -9,9 +9,10 @@ public class GetPlayersTest
     [Fact]
     public async Task GetTwentyFivePlayersTest()
     {
+        // TODO: Start at 70
         const int gameId = 449;
         const int leagueKey = 483521;
-        const int startNumber = 0;
+        const int startNumber = 70;
         const string oAuthToken = "NoToken";
 
         var playersApi = await GetAllPlayersApi.GetAllPlayers(oAuthToken, gameId, leagueKey, startNumber);

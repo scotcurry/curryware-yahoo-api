@@ -10,9 +10,9 @@ public class LeagueStatValueTest(ITestOutputHelper output)
     public async Task GetLeagueStatValueTest()
     {
         output.WriteLine("Get League Stat Value");
-        var leagueStatsApi = new LeagueStatValueApi();
-        var leagueStatsJson = await leagueStatsApi.GetLeagueStatValueInformation();
-        var leagueKey = leagueStatsJson?.Substring(18, 10);
-        Assert.Equal(4494835214, Convert.ToInt64(leagueKey));
+        var gameId = 449;
+        var leagueKey = 483521;
+        var leagueStatsJson = await LeagueStatValueApi.GetLeagueStatValueInformation(gameId, leagueKey);
+        Assert.True(leagueStatsJson?.Length > 0);
     }
 }

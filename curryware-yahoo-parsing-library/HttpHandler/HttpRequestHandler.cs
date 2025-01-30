@@ -48,22 +48,22 @@ abstract class HttpRequestHandler
             }
             
             CurrywareLogHandler.AddLog("Uncaught Error in MakeYahooApiCall", LogLevel.Error);
-            return "Uncaught Error in MakeYahooApiCall";
+            return "Error: Uncaught Error in MakeYahooApiCall";
         }
         catch (InvalidOperationException invalidOperationException)
         {
             CurrywareLogHandler.AddLog(invalidOperationException.Message, LogLevel.Error);
-            return "InvalidOperation Error";
+            return "Error: InvalidOperation Error";
         }
         catch (HttpRequestException httpRequestException)
         {
             CurrywareLogHandler.AddLog(httpRequestException.Message, LogLevel.Error);
-            return "HttpRequestException Error";
+            return "Error: HttpRequestException Error";
         }
         catch (TaskCanceledException taskCanceledException)
         {
             CurrywareLogHandler.AddLog(taskCanceledException.Message, LogLevel.Error);
-            return "TaskCanceledException Error";
+            return "Error: TaskCanceledException Error";
         }
     }
 }

@@ -10,7 +10,7 @@ namespace curryware_yahoo_parsing_library.XmlParsers.LeagueParsers;
 
 internal class LeagueStatValueParser
 {
-    internal static string GetLeagueStatValuesFromXml(string xmlPayload)
+    internal static string GetLeagueStatValuesFromXml(string xmlPayload, int gameId, int leagueId)
     {
         var leagueStatValues = new List<LeagueStatsValueModel>();
 
@@ -32,13 +32,7 @@ internal class LeagueStatValueParser
             var allStatsInCategory = statsCategoriesNode?.Descendants(fantasyNameSpace + "stat");
             if (allStatsInCategory != null)
             {
-                foreach (var currentStatsNode in allStatsInCategory)
-                {
-                    var leagueStatCategory = ParseCurrentStatsNode(currentStatsNode);
-                    var statKey = BuildStatKey(key: leagueKeyString, statId: leagueStatCategory.StatId);
-                    leagueStatCategory.LeagueStatKey = statKey;
-                    leagueStatValues.Add(leagueStatCategory);
-                }
+                leagueStatValues.AddRange(allStatsInCategory.Select(currentStatsNode => ParseCurrentStatsNode(currentStatsNode, gameId, leagueId)));
             }
         }
         catch (XmlException xmlException)
@@ -78,7 +72,13 @@ internal class LeagueStatValueParser
         }
     }
 
-    private static LeagueStatsValueModel ParseCurrentStatsNode(XElement currentStatsNode)
+    //  TODO:  Clean this up.
+    // private static LeagueStatsValueModel ParseCurrentStatsNode(XElement currentStatsNode, int gameId, int leagueId)
+    // {
+    //     return ParseCurrentStatsNode(currentStatsNode, TODO, TODO);
+    // }
+
+    private static LeagueStatsValueModel ParseCurrentStatsNode(XElement currentStatsNode, int gameId, int leagueId)
     {
         var statId = 0;
         decimal statValue = 0;
@@ -95,6 +95,8 @@ internal class LeagueStatValueParser
 
         var leagueStat = new LeagueStatsValueModel
         {
+            GameId = gameId,
+            LeagueId = leagueId,
             StatId = statId,
             StatValue = statValue
         };
