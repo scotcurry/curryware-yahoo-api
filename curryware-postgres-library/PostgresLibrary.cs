@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using curryware_postgres_library.Models.PlayerModels;
+using curryware_data_models;
 using curryware_postgres_library.PostgresSetup;
 using Npgsql;
 
@@ -12,12 +12,13 @@ public abstract class PostgresLibrary
         return await PostgresQueryExecutor.ExecuteQueryAsync(async connection =>
         {
             var playerList = new List<PlayerModel>();
-            const string selectString = @"
-                SELECT player_id, player_season_key, player_name, player_url,
-                   player_team, player_bye_week, player_uniform_number, 
-                   player_position, player_headshot
-              FROM player_info 
-             WHERE player_position = @position";
+            const string selectString = """
+                                                        SELECT player_id, player_season_key, player_name, player_url,
+                                                           player_team, player_bye_week, player_uniform_number, 
+                                                           player_position, player_headshot
+                                                      FROM player_info 
+                                                     WHERE player_position = @position
+                                        """;
 
             await using var command = new NpgsqlCommand(selectString, connection);
             command.Parameters.AddWithValue("position", position);

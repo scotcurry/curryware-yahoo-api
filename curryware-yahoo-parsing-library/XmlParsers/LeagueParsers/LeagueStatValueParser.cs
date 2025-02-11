@@ -71,13 +71,7 @@ internal class LeagueStatValueParser
             return "Error: Failed to serialize league information";
         }
     }
-
-    //  TODO:  Clean this up.
-    // private static LeagueStatsValueModel ParseCurrentStatsNode(XElement currentStatsNode, int gameId, int leagueId)
-    // {
-    //     return ParseCurrentStatsNode(currentStatsNode, TODO, TODO);
-    // }
-
+    
     private static LeagueStatsValueModel ParseCurrentStatsNode(XElement currentStatsNode, int gameId, int leagueId)
     {
         var statId = 0;

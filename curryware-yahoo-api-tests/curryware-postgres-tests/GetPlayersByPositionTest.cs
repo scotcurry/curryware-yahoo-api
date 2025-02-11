@@ -9,7 +9,6 @@ public class PlayersTests
     [Fact]
     public async Task GetPlayersByPositionTest()
     {
-        // TODO: Get this test working.
         Environment.SetEnvironmentVariable("POSTGRES_USERNAME", "scot");
         Environment.SetEnvironmentVariable("POSTGRES_PASSWORD", "AirWatch1");
         Environment.SetEnvironmentVariable("POSTGRES_PORT", "5432");

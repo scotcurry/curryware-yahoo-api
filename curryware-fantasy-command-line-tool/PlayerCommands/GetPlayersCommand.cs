@@ -1,6 +1,6 @@
 using System.Text.Json;
 using curryware_yahoo_parsing_library.PlayerApis;
-using curryware_yahoo_parsing_library.PlayerModels;
+using curryware_data_models;
 using curryware_kafka_command_line.CommandLineModels;
 using curryware_kafka_producer_library;
 

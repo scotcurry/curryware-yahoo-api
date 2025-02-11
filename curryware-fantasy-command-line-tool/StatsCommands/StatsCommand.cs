@@ -29,7 +29,6 @@ internal abstract class StatsCommand
             Environment.Exit(200);
         }
         
-        // TODO: Fix this
         return "scot";
     }
 }
