@@ -7,9 +7,9 @@ using Microsoft.Extensions.Logging;
 
 namespace curryware_yahoo_parsing_library.FirebaseOAuthCallHandler;
 
-abstract class FirebaseOAuthCall
+public abstract class FirebaseOAuthCall
 {
-    internal static async Task<string> GetOAuthTokenFromFirebase()
+    public static async Task<string> GetOAuthTokenFromFirebase()
     {
         var gcpUri = "https://curryware-firebase-auth-gcp-399646747702.us-central1.run.app/get_oauth_token";
 
@@ -67,6 +67,7 @@ abstract class FirebaseOAuthCall
         catch (HttpRequestException httpRequestException)
         {
             CurrywareLogHandler.AddLog(httpRequestException.Message, LogLevel.Error);
+            var debug = httpRequestException?.InnerException?.Message;
             return "Error: HttpRequestException";
         }
         catch (TaskCanceledException taskCanceledException)

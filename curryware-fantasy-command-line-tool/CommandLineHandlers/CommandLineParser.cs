@@ -1,10 +1,10 @@
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 
-using curryware_kafka_command_line.CommandLineModels;
+using curryware_fantasy_command_line_tool.CommandLineModels;
 using curryware_log_handler;
 
-namespace curryware_kafka_command_line.CommandLineHandlers;
+namespace curryware_fantasy_command_line_tool.CommandLineHandlers;
 
 public abstract class CommandLineParser
 {

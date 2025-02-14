@@ -12,6 +12,7 @@ public class FirebaseOAuthCall
 
         using var client = new HttpClient();
         var response = await client.GetAsync(gcpUri);
+        CurrywareLogHandler.AddLog("Response Status Code: " + response.StatusCode, LogLevel.Information);
         
         var currentUnixTime = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
         var validAuthTokenTime = currentUnixTime + 3500;

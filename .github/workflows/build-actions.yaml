@@ -1,5 +1,8 @@
 name: curryware-yahoo-api Build
-on: [push]
+on:
+  push:
+    branches:
+    - 'main'
 jobs:
   build-dotnet-project:
     runs-on: ubuntu-latest
@@ -10,6 +13,8 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
+      - name: Build model-project
+        run: dotnet build curryware-data-models/curryware-data-models.csproj --configuration Release
       - name: Build api-project
         run: dotnet build curryware-yahoo-api/curryware-yahoo-api.csproj --configuration Release
       - name: Build api-project-tests

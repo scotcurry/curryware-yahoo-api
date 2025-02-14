@@ -2,7 +2,7 @@ using System.Xml;
 using System.Text.Json;
 using System.Xml.Linq;
 using curryware_yahoo_parsing_library.LogHandler;
-using curryware_yahoo_parsing_library.PlayerModels;
+using curryware_data_models;
 using Microsoft.Extensions.Logging;
 
 namespace curryware_yahoo_parsing_library.XmlParsers.LeaguePlayers;
@@ -29,7 +29,7 @@ internal abstract class LeaguePlayerParser
             }
 
             var availablePlayers = playersNode.Any();
-            if (!availablePlayers) return null;
+            if (!availablePlayers) return string.Empty;
 
             foreach (var currentPlayer in players)
             {

@@ -1,5 +1,5 @@
 using System.Text.Json;
-using curryware_postgres_library.Models.PlayerModels;
+using curryware_data_models;
 using Npgsql;
 
 namespace curryware_postgres_library.PlayerQueries;
