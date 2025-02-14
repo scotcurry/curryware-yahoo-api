@@ -2,7 +2,7 @@ name: curryware-yahoo-api Build
 on:
   push:
     branches:
-    - 'main'
+    - 'master'
 jobs:
   build-dotnet-project:
     runs-on: ubuntu-latest
