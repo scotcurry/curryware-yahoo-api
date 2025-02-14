@@ -1,6 +1,6 @@
 using Xunit;
-using curryware_kafka_command_line.CommandLineHandlers;
-using curryware_kafka_command_line.CommandLineModels;
+using curryware_fantasy_command_line_tool.CommandLineHandlers;
+using curryware_fantasy_command_line_tool.CommandLineModels;
 
 namespace curryware_yahoo_api_tests.curryware_parsing_library_tests;
 

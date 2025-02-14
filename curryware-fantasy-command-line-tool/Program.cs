@@ -1,15 +1,14 @@
-﻿using System.Text.Json;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
-using curryware_kafka_command_line.CommandLineHandlers;
-using curryware_kafka_command_line.CommandLineModels;
+using curryware_fantasy_command_line_tool.CommandLineHandlers;
+using curryware_fantasy_command_line_tool.CommandLineModels;
 using curryware_log_handler;
-using curryware_kafka_command_line.PlayerCommands;
-using curryware_kafka_command_line.StatsCommands;
+using curryware_fantasy_command_line_tool.PlayerCommands;
+using curryware_fantasy_command_line_tool.StatsCommands;
 
-namespace curryware_kafka_command_line;
+namespace curryware_fantasy_command_line_tool;
 
-internal abstract class Program
+public abstract class Program
 {
     public static async Task Main(string[] args)
     {
@@ -21,8 +20,10 @@ internal abstract class Program
                 totalBatches = await PlayerCommand.RunGetPlayersCommand(parsedCommandLine);
             if (parsedCommandLineObject is GameStatsCommandLineParameters gameStatsCommandLine) 
             {
+                Console.WriteLine("Running stats command");
+                CurrywareLogHandler.AddLog($"Command Line: ", LogLevel.Debug);
                 var returnValue = await StatsCommand.GetStats(gameStatsCommandLine);
-                totalBatches = returnValue.Length;
+                totalBatches = returnValue.Count;
             }
             CurrywareLogHandler.AddLog($"Wrote {totalBatches} to Kafka queue", LogLevel.Debug);
         }

@@ -1,34 +1,43 @@
-using curryware_kafka_command_line.CommandLineModels;
+using curryware_fantasy_command_line_tool.CommandLineModels;
 using curryware_log_handler;
 using curryware_postgres_library;
 using Microsoft.Extensions.Logging;
 
-namespace curryware_kafka_command_line.StatsCommands;
+namespace curryware_fantasy_command_line_tool.StatsCommands;
 
 internal abstract class StatsCommand
 {
-    internal static async Task<string> GetStats(GameStatsCommandLineParameters statsCommandLineParameters)
+    internal static async Task<List<string>> GetStats(GameStatsCommandLineParameters statsCommandLineParameters)
     {
         var gameId = statsCommandLineParameters.GameId;
         var playerPosition = statsCommandLineParameters.PlayerPosition;
         var statsWeek = statsCommandLineParameters.Week;
-        var startNumber = 0;
-        var totalBatches = 0;
-        var morePlayers = true;
-        var oauthToken = "NoToken";
-        
-        // This queries the Postgres database and pulls all the players at a given position.  This will be passed in
-        // to get the stats.
-        // Make sure to set environment variables for Postgres Server.
-        var playerList = string.Empty;
+
+        // Pull all the players by position from the Postgres database.
+        List<string> allPlayersJson;
         if (playerPosition != null)
-            playerList = await PostgresLibrary.GetPlayerIdsByPosition(playerPosition);
+        {
+            allPlayersJson = await GetPlayersFromPostgres.GetPlayersByPosition(playerPosition);
+        }
         else
         {
-            CurrywareLogHandler.AddLog("No player position specified.", LogLevel.Error);
-            Environment.Exit(200);
+            return [];
+        }
+
+        // Get all of the statistics for the pulled players.
+        var playerStatsJson = await GetPlayerStats.GetPlayerStatBatch(allPlayersJson, gameId, statsWeek);
+        if (playerStatsJson.Count > 0)
+        {
+            foreach (var currentBatch in playerStatsJson)
+            {
+                var success = await AddStatsToKafkaQueue.AddStatsToQueue(currentBatch);
+                if (!success)
+                {
+                    CurrywareLogHandler.AddLog("Failed to add stats to Kafka queue.", LogLevel.Error);
+                }
+            }
         }
         
-        return "scot";
+        return playerStatsJson;
     }
 }

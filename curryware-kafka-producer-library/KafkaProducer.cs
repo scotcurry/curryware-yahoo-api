@@ -33,18 +33,9 @@ public abstract class KafkaProducer
              var message = new Message<string, string>
              {
                  Key = key,
-                 Value = value
+                 Value = valueBase64
              };
-
-             // var valueScot = "Scot";
-             // var textBytes = System.Text.Encoding.UTF8.GetBytes(valueScot);
-             // var valueScotBase64 = Convert.ToBase64String(textBytes);
-             // var message = new Message<string, string>
-             // {
-             //     Key = key,
-             //     Value = valueScotBase64
-             // };
-         
+             
              var topicExists = ValidateKafkaSettings.GetValidateTopicExists(topic);
              if (!topicExists)
              {

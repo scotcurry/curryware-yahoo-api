@@ -29,7 +29,7 @@ internal abstract class LeaguePlayerParser
             }
 
             var availablePlayers = playersNode.Any();
-            if (!availablePlayers) return null;
+            if (!availablePlayers) return string.Empty;
 
             foreach (var currentPlayer in players)
             {

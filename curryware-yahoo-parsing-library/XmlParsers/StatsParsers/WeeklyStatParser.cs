@@ -2,7 +2,7 @@ using System.Text.Json;
 using System.Xml;
 using System.Xml.Linq;
 using curryware_yahoo_parsing_library.LogHandler;
-using curryware_yahoo_parsing_library.StatsModel;
+using curryware_data_models;
 using Microsoft.Extensions.Logging;
 
 namespace curryware_yahoo_parsing_library.XmlParsers.StatsParsers;
