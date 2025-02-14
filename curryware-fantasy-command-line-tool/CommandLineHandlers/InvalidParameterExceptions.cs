@@ -1,4 +1,4 @@
-namespace curryware_kafka_command_line.CommandLineHandlers;
+namespace curryware_fantasy_command_line_tool.CommandLineHandlers;
 
 public class InvalidParameterException : Exception
 {

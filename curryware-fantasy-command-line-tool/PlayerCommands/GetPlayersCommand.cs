@@ -1,10 +1,10 @@
 using System.Text.Json;
 using curryware_yahoo_parsing_library.PlayerApis;
-using curryware_yahoo_parsing_library.PlayerModels;
-using curryware_kafka_command_line.CommandLineModels;
+using curryware_data_models;
+using curryware_fantasy_command_line_tool.CommandLineModels;
 using curryware_kafka_producer_library;
 
-namespace curryware_kafka_command_line.PlayerCommands;
+namespace curryware_fantasy_command_line_tool.PlayerCommands;
 
 internal abstract class PlayerCommand
 {

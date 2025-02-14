@@ -1,21 +1,22 @@
 using Xunit;
 
-using curryware_postgres_library;
+using curryware_fantasy_command_line_tool.StatsCommands;
 
-namespace curryware_yahoo_api_tests.curryware_postgres_tests;
+namespace curryware_yahoo_api_tests.curryware_command_line_tests;
 
-public class PlayersTests
+public class GetPlayersFromDatabaseTest
 {
     [Fact]
-    public async Task GetPlayersByPositionTest()
+    public async Task GetPlayersFromPostgresDatabaseTest()
     {
         Environment.SetEnvironmentVariable("POSTGRES_USERNAME", "scot");
         Environment.SetEnvironmentVariable("POSTGRES_PASSWORD", "AirWatch1");
         Environment.SetEnvironmentVariable("POSTGRES_PORT", "5432");
         Environment.SetEnvironmentVariable("POSTGRES_DATABASE", "currywarefantasy");
         Environment.SetEnvironmentVariable("POSTGRES_SERVER", "localhost");
-        string position = "QB";
-        var playersByPosition = await PostgresLibrary.GetPlayerIdsByPosition(position);
-        Assert.Contains("Aaron Rodgers", playersByPosition);
+        var playerPosition = "RB";
+        
+        var players = await GetPlayersFromPostgres.GetPlayersByPosition(playerPosition);
+        Assert.True(players.Count > 0);
     }
 }

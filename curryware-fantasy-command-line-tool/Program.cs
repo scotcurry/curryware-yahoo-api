@@ -1,15 +1,14 @@
-﻿using System.Text.Json;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 
-using curryware_kafka_command_line.CommandLineHandlers;
-using curryware_kafka_command_line.CommandLineModels;
+using curryware_fantasy_command_line_tool.CommandLineHandlers;
+using curryware_fantasy_command_line_tool.CommandLineModels;
 using curryware_log_handler;
-using curryware_kafka_command_line.PlayerCommands;
-using curryware_kafka_command_line.StatsCommands;
+using curryware_fantasy_command_line_tool.PlayerCommands;
+using curryware_fantasy_command_line_tool.StatsCommands;
 
-namespace curryware_kafka_command_line;
+namespace curryware_fantasy_command_line_tool;
 
-internal abstract class Program
+public abstract class Program
 {
     public static async Task Main(string[] args)
     {
@@ -19,11 +18,12 @@ internal abstract class Program
             var parsedCommandLineObject = CommandLineParser.ParseCommandLine(args);
             if (parsedCommandLineObject is PlayerCommandLineParameters parsedCommandLine)
                 totalBatches = await PlayerCommand.RunGetPlayersCommand(parsedCommandLine);
-            // TODO: Fix this.
             if (parsedCommandLineObject is GameStatsCommandLineParameters gameStatsCommandLine) 
             {
+                Console.WriteLine("Running stats command");
+                CurrywareLogHandler.AddLog($"Command Line: ", LogLevel.Debug);
                 var returnValue = await StatsCommand.GetStats(gameStatsCommandLine);
-                totalBatches = returnValue.Length;
+                totalBatches = returnValue.Count;
             }
             CurrywareLogHandler.AddLog($"Wrote {totalBatches} to Kafka queue", LogLevel.Debug);
         }
@@ -60,59 +60,4 @@ internal abstract class Program
         Console.WriteLine("\t\t W - Waivers");
         Console.WriteLine("\t\t T - Taken");
     }
-
-    // Because there are only 25 players to a page, this method gets a JSON string with all the players and the
-    // number of players on the page, it then reserialize it with just the players to add it to the Kafka queue.
-    // private static async Task<int> RunGetPlayersCommand(PlayerCommandLineParameters playerCommandLineParameters)
-    // {
-    //     const string kafkaTopic = "PlayerTopic2";
-    //     var gameId = playerCommandLineParameters.GameId;
-    //     var leagueId = playerCommandLineParameters.LeagueId;
-    //     var playerPosition = playerCommandLineParameters.PlayerPosition;
-    //     var playerStatus = playerCommandLineParameters.PlayerStatus;
-    //     var startNumber = 0;
-    //     var totalBatches = 0;
-    //     var morePlayers = true;
-    //     var oauthToken = "NoToken";
-    //
-    //     while (morePlayers)
-    //     {
-    //         var playerJson = string.Empty;
-    //         if (playerPosition != "None" && playerStatus != "None")
-    //             playerJson = await GetAllPlayersApi.GetAllPlayers(oauthToken, gameId, leagueId, startNumber, status: playerStatus!,
-    //                 playerPosition!);
-    //         if (playerPosition != "None" && playerStatus == "None")
-    //             playerJson =
-    //                 await GetAllPlayersApi.GetAllPlayers(oauthToken, gameId, leagueId, startNumber, status: playerPosition!);
-    //         if (playerPosition == "None" && playerStatus != "None")
-    //             playerJson = await GetAllPlayersApi.GetAllPlayers(oauthToken, gameId, leagueId, startNumber, status: playerStatus!);
-    //         if (playerPosition == "None" && playerStatus == "None")
-    //             playerJson = await GetAllPlayersApi.GetAllPlayers(oauthToken, gameId, leagueId, startNumber);
-    //
-    //         if (playerJson == null) continue;
-    //         var playersModel = JsonSerializer.Deserialize<PlayersListWithCount>(playerJson);
-    //         if (playersModel == null) continue;
-    //         if (playersModel.Players?.Count < 25)
-    //             morePlayers = false;
-    //         startNumber += 25;
-    //         if (playersModel.OAuthToken == null) continue;
-    //         oauthToken = playersModel.OAuthToken;
-    //
-    //         try
-    //         {
-    //             var justPlayers = JsonSerializer.Serialize(playersModel.Players);
-    //             Console.WriteLine("Writing Players: " + justPlayers);
-    //             var kafkaResult = await KafkaProducer.CreateKafkaMessage(kafkaTopic, justPlayers);
-    //             if (kafkaResult)
-    //                 totalBatches++;
-    //         }
-    //         catch (Exception e)
-    //         {
-    //             Console.WriteLine(e);
-    //             throw;
-    //         }
-    //     }
-    //     
-    //     return totalBatches;
-    // }
 }

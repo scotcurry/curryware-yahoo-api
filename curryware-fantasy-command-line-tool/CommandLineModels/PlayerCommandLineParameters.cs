@@ -1,4 +1,4 @@
-namespace curryware_kafka_command_line.CommandLineModels;
+namespace curryware_fantasy_command_line_tool.CommandLineModels;
 
 public class PlayerCommandLineParameters
 {

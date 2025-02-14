@@ -18,5 +18,6 @@ public class StatsTests
         playerList.AddRange(["31833", "32671"]);
         
         var playerBatchString = await GetWeeklyStatsApi.GetWeeklyStats(oAuthToken, gameId, weekNumber, playerList);
+        Assert.True(playerBatchString?.Length > 0);
     }
 }

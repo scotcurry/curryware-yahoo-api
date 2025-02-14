@@ -1,4 +1,4 @@
-namespace curryware_yahoo_parsing_library.PlayerModels;
+﻿namespace curryware_data_models;
 
 public class PlayerModel
 {
