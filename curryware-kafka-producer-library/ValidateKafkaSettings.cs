@@ -20,7 +20,7 @@ public abstract class ValidateKafkaSettings
         var portString = partsToValidate[1];
         int port = Convert.ToInt32(portString);
         CurrywareLogHandler.AddLog($"Kafka Host: {host}, Kafka Port: {port}", LogLevel.Information);
-        
+
         try
         {
             using var client = new TcpClient();
@@ -50,6 +50,11 @@ public abstract class ValidateKafkaSettings
         {
             CurrywareLogHandler.AddLog(argumentException.Message, LogLevel.Error);
             throw new KafkaValidationException("Argument Exception!", argumentException);
+        }
+        catch (PlatformNotSupportedException platformNotSupportedException)
+        {
+            CurrywareLogHandler.AddLog(platformNotSupportedException.Message, LogLevel.Error);
+            throw new KafkaValidationException("Platform Not Supported!", platformNotSupportedException);
         }
     }
     

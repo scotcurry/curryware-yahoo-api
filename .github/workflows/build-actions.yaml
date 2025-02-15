@@ -25,15 +25,14 @@ jobs:
         run: dotnet build curryware-postgres-library/curryware-postgres-library.csproj --configuration Release
         
       # Datadog Test Visibility
-      # TODO:  Need to get this set up to only run the tests that don't have dependencies.
       - name: Configure Datadog Test Visibility
         uses: datadog/test-visibility-github-action@v2
         with:
           languages: dotnet
           service: curryware-yahoo-api
           api_key: ${{ secrets.DD_API_KEY }}
-      - name: Run tests
-        run: dotnet test curryware-yahoo-api-tests/curryware-parsing-library-tests/curryware-yahoo-api-tests.csproj
+      - name: Run Api Parser Tests
+        run: dotnet test curryware-yahoo-parsing-library-tests/curryware-yahoo-parsing-library-tests.csproj
       
       - name: Setup Node for Quality Gateway check
         run: curl -L --fail "https://github.com/DataDog/datadog-ci/releases/latest/download/datadog-ci_linux-x64" --output "/usr/local/bin/datadog-ci" && chmod +x /usr/local/bin/datadog-ci
