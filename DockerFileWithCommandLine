@@ -3,13 +3,18 @@ WORKDIR /app
 
 # Get the solution and all of the projects copied to the image for build
 COPY *.sln ./
+COPY curryware-data-models/curryware-data-models.csproj curryware-data-models/
 COPY curryware-fantasy-command-line-tool/curryware-fantasy-command-line-tool.csproj curryware-fantasy-command-line-tool/
+COPY curryware-fantasy-command-line-tool-tests/curryware-fantasy-command-line-tool-tests.csproj curryware-fantasy-command-line-tool-tests/
 COPY curryware-kafka-producer-library/curryware-kafka-producer-library.csproj curryware-kafka-producer-library/
+COPY curryware-kafka-producer-library-tests/curryware-kafka-producer-library-tests.csproj curryware-kafka-producer-library-tests/
 COPY curryware-log-handler/curryware-log-handler.csproj curryware-log-handler/
+COPY curryware-postgres-library/curryware-postgres-library.csproj curryware-postgres-library/
+COPY curryware-postgres-library-tests/curryware-postgres-library-tests.csproj curryware-postgres-library-tests/
 COPY curryware-yahoo-api/curryware-yahoo-api.csproj curryware-yahoo-api/
 COPY curryware-yahoo-api-tests/curryware-yahoo-api-tests.csproj curryware-yahoo-api-tests/
 COPY curryware-yahoo-parsing-library/curryware-yahoo-parsing-library.csproj curryware-yahoo-parsing-library/
-COPY curryware-postgres-library/curryware-postgres-library.csproj curryware-postgres-library/
+COPY curryware-yahoo-parsing-library-tests/curryware-yahoo-parsing-library-tests.csproj curryware-yahoo-parsing-library-tests/
 
 # Find and download all of the dependencies.
 RUN dotnet restore
