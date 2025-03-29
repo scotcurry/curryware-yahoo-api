@@ -4,7 +4,7 @@ using System.Xml.Linq;
 using Microsoft.Extensions.Logging;
 
 using curryware_yahoo_parsing_library.LeagueModels;
-using curryware_yahoo_parsing_library.LogHandler;
+using Serilog;
 
 namespace curryware_yahoo_parsing_library.XmlParsers.LeagueParsers;
 
@@ -18,7 +18,7 @@ abstract class LeagueInformationParser
         var leagueUrl = "Unknown";
         var leagueDraftStatus = "Unknown";
         var leagueNumTeams = 0;
-        Int64 leagueUpdateTimeStamp = 0;
+        long leagueUpdateTimeStamp = 0;
         var leagueScoringType = "Unknown";
         var leagueWeek = 0;
         var leagueStartWeek = 0;
@@ -129,14 +129,16 @@ abstract class LeagueInformationParser
         }
         catch (XmlException xmlException)
         {
-            CurrywareLogHandler.AddLog(xmlException.Message, LogLevel.Error);
-            CurrywareLogHandler.AddLog("Error: Failed to parse league information", LogLevel.Error);
+            // CurrywareLogHandler.AddLog(xmlException.Message, LogLevel.Error);
+            Log.Error(xmlException, "Error: Failed to parse league information");
+            // CurrywareLogHandler.AddLog("Error: Failed to parse league information", LogLevel.Error);
             return "Error: Failed to parse league information";
         }
         catch (FormatException formatException)
         {
-            CurrywareLogHandler.AddLog(formatException.Message, LogLevel.Error);
-            CurrywareLogHandler.AddLog("Error: Failed to parse league information", LogLevel.Error);
+            // CurrywareLogHandler.AddLog(formatException.Message, LogLevel.Error);
+            Log.Error(formatException, "Error: Failed to parse league information");
+            // CurrywareLogHandler.AddLog("Error: Failed to parse league information", LogLevel.Error);
             return "Error: Failed to parse league information";
         }
 
@@ -163,7 +165,7 @@ abstract class LeagueInformationParser
         {
             var serializerOptions = new JsonSerializerOptions
             {
-                WriteIndented = false,
+                WriteIndented = false
             };
 
             var json = JsonSerializer.Serialize(leagueInformation, serializerOptions);
@@ -171,14 +173,16 @@ abstract class LeagueInformationParser
         }
         catch (ArgumentNullException argumentNullException)
         {
-            CurrywareLogHandler.AddLog(argumentNullException.Message, LogLevel.Error);
-            CurrywareLogHandler.AddLog("Error: Failed to serialize league information", LogLevel.Error);
+            // CurrywareLogHandler.AddLog(argumentNullException.Message, LogLevel.Error);
+            Log.Error(argumentNullException, "Error: Failed to serialize league information");
+            // CurrywareLogHandler.AddLog("Error: Failed to serialize league information", LogLevel.Error);
             return "Error: Failed to serialize league information";
         }
         catch (InvalidCastException invalidCastException)
         {
-            CurrywareLogHandler.AddLog(invalidCastException.Message, LogLevel.Error);
-            CurrywareLogHandler.AddLog("Error: Failed to serialize league information", LogLevel.Error);
+            // CurrywareLogHandler.AddLog(invalidCastException.Message, LogLevel.Error);
+            Log.Error(invalidCastException, "Error: Failed to serialize league information");
+            // CurrywareLogHandler.AddLog("Error: Failed to serialize league information", LogLevel.Error);
             return "Error: Failed to serialize league information";
         }
     }

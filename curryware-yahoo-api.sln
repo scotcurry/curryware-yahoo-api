@@ -2,8 +2,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "curryware-yahoo-api", "curryware-yahoo-api\curryware-yahoo-api.csproj", "{60E1FDCD-1749-421D-A838-02C4CD02CEC9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "curryware-yahoo-api-tests", "curryware-yahoo-api-tests\curryware-yahoo-api-tests.csproj", "{66BE2AD0-FD37-47AF-A777-0499E30CAB62}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github/workflows", ".github/workflows", "{88A53D57-9F39-4204-9597-1C0F8E9DA21D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "curryware-fantasy-command-line-tool", "curryware-fantasy-command-line-tool\curryware-fantasy-command-line-tool.csproj", "{BA189E22-D448-4136-9968-3BFD8C4C50E3}"
@@ -17,8 +15,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "curryware-postgres-library", "curryware-postgres-library\curryware-postgres-library.csproj", "{B5304134-A684-4E66-8652-AA78938FA122}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "curryware-data-models", "curryware-data-models\curryware-data-models.csproj", "{9A7F3668-508A-4CDE-A7EE-227A00731B26}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "curryware-fantasy-command-line-tool-tests", "curryware-fantasy-command-line-tool-tests\curryware-fantasy-command-line-tool-tests.csproj", "{634F9AAF-F19A-416E-A654-4A04CC9D76D6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "curryware-kafka-producer-library-tests", "curryware-kafka-producer-library-tests\curryware-kafka-producer-library-tests.csproj", "{76764FC0-3435-4E48-A489-C8C3674CA91D}"
 EndProject
@@ -36,10 +32,6 @@ Global
 		{60E1FDCD-1749-421D-A838-02C4CD02CEC9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{60E1FDCD-1749-421D-A838-02C4CD02CEC9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{60E1FDCD-1749-421D-A838-02C4CD02CEC9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{66BE2AD0-FD37-47AF-A777-0499E30CAB62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{66BE2AD0-FD37-47AF-A777-0499E30CAB62}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{66BE2AD0-FD37-47AF-A777-0499E30CAB62}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{66BE2AD0-FD37-47AF-A777-0499E30CAB62}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BA189E22-D448-4136-9968-3BFD8C4C50E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BA189E22-D448-4136-9968-3BFD8C4C50E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA189E22-D448-4136-9968-3BFD8C4C50E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -64,10 +56,6 @@ Global
 		{9A7F3668-508A-4CDE-A7EE-227A00731B26}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A7F3668-508A-4CDE-A7EE-227A00731B26}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A7F3668-508A-4CDE-A7EE-227A00731B26}.Release|Any CPU.Build.0 = Release|Any CPU
-		{634F9AAF-F19A-416E-A654-4A04CC9D76D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{634F9AAF-F19A-416E-A654-4A04CC9D76D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{634F9AAF-F19A-416E-A654-4A04CC9D76D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{634F9AAF-F19A-416E-A654-4A04CC9D76D6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{76764FC0-3435-4E48-A489-C8C3674CA91D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{76764FC0-3435-4E48-A489-C8C3674CA91D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76764FC0-3435-4E48-A489-C8C3674CA91D}.Release|Any CPU.ActiveCfg = Release|Any CPU

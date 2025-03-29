@@ -2,9 +2,9 @@
 
 using curryware_fantasy_command_line_tool.CommandLineHandlers;
 using curryware_fantasy_command_line_tool.CommandLineModels;
-using curryware_log_handler;
 using curryware_fantasy_command_line_tool.PlayerCommands;
 using curryware_fantasy_command_line_tool.StatsCommands;
+using Serilog;
 
 namespace curryware_fantasy_command_line_tool;
 
@@ -20,22 +20,25 @@ public abstract class Program
                 totalBatches = await PlayerCommand.RunGetPlayersCommand(parsedCommandLine);
             if (parsedCommandLineObject is GameStatsCommandLineParameters gameStatsCommandLine) 
             {
-                Console.WriteLine("Running stats command");
-                CurrywareLogHandler.AddLog($"Command Line: ", LogLevel.Debug);
+                // CurrywareLogHandler.AddLog($"Command Line: ", LogLevel.Debug);
+                Log.Debug("Running stats command");
                 var returnValue = await StatsCommand.GetStats(gameStatsCommandLine);
                 totalBatches = returnValue.Count;
             }
-            CurrywareLogHandler.AddLog($"Wrote {totalBatches} to Kafka queue", LogLevel.Debug);
+            // CurrywareLogHandler.AddLog($"Wrote {totalBatches} to Kafka queue", LogLevel.Debug);
+            Log.Debug($"Wrote {totalBatches} to Kafka queue");
         }
         catch (InvalidParameterException invalidParameterException)
         {
-            CurrywareLogHandler.AddLog(invalidParameterException.Message, LogLevel.Error);
+            // CurrywareLogHandler.AddLog(invalidParameterException.Message, LogLevel.Error);
+            Log.Error(invalidParameterException.Message);
             PrintHelp();
             Environment.Exit(120);
         }
         catch (InvalidOperationException invalidOperationException)
         {
-            CurrywareLogHandler.AddLog(invalidOperationException.Message, LogLevel.Error);
+            // CurrywareLogHandler.AddLog(invalidOperationException.Message, LogLevel.Error);
+            Log.Error(invalidOperationException.Message);
             PrintHelp();
             Environment.Exit(130);
         }

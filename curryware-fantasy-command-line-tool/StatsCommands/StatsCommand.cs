@@ -1,13 +1,12 @@
 using curryware_fantasy_command_line_tool.CommandLineModels;
-using curryware_log_handler;
-using curryware_postgres_library;
-using Microsoft.Extensions.Logging;
+
+using Serilog;
 
 namespace curryware_fantasy_command_line_tool.StatsCommands;
 
-internal abstract class StatsCommand
+public abstract class StatsCommand
 {
-    internal static async Task<List<string>> GetStats(GameStatsCommandLineParameters statsCommandLineParameters)
+    public static async Task<List<string>> GetStats(GameStatsCommandLineParameters statsCommandLineParameters)
     {
         var gameId = statsCommandLineParameters.GameId;
         var playerPosition = statsCommandLineParameters.PlayerPosition;
@@ -33,7 +32,8 @@ internal abstract class StatsCommand
                 var success = await AddStatsToKafkaQueue.AddStatsToQueue(currentBatch);
                 if (!success)
                 {
-                    CurrywareLogHandler.AddLog("Failed to add stats to Kafka queue.", LogLevel.Error);
+                    // CurrywareLogHandler.AddLog("Failed to add stats to Kafka queue.", LogLevel.Error);
+                    Log.Error("Failed to add stats to Kafka queue.");
                 }
             }
         }

@@ -1,8 +1,7 @@
 using curryware_yahoo_parsing_library.FirebaseOAuthCallHandler;
 using curryware_yahoo_parsing_library.HttpHandler;
-using curryware_yahoo_parsing_library.LogHandler;
 using curryware_yahoo_parsing_library.XmlParsers.StatsParsers;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace curryware_yahoo_parsing_library.StatsApis;
 
@@ -18,33 +17,38 @@ public abstract class GetWeeklyStatsApi
         foreach (var playersString in playerBatchStrings)
         {
             endpoint = endpoint.Replace("{playerKeysToken}", playersString);
-            CurrywareLogHandler.AddLog($"Getting stats for endpoint: {endpoint}", LogLevel.Debug);
+            // CurrywareLogHandler.AddLog($"Getting stats for endpoint: {endpoint}", LogLevel.Debug);
+            Log.Debug("Getting stats for endpoint: {endpoint}", endpoint);
 
             if (oAuthToken == "NoToken")
             {
                 oAuthToken = await FirebaseOAuthCall.GetOAuthTokenFromFirebase();
-                if (oAuthToken.Substring(0, 6) == "Error:")
+                if (oAuthToken[..6] == "Error:")
                 {
-                    CurrywareLogHandler.AddLog("Error getting OAuth Token from Firebase GetWeeklyStatsAPI",
-                        LogLevel.Error);
+                    // CurrywareLogHandler.AddLog("Error getting OAuth Token from Firebase GetWeeklyStatsAPI",
+                    //     LogLevel.Error);
+                    Log.Error("Error getting OAuth Token from Firebase GetWeeklyStatsAPI");
                     return "Error";
                 }
-                CurrywareLogHandler.AddLog("Got OAuth Token from Firebase", LogLevel.Debug);
+                Log.Debug("Got OAuth Token from Firebase");
             }
 
             var statInformationXml = await HttpRequestHandler.MakeYahooApiCall(endpoint,
                     oAuthToken);
-            if (statInformationXml.Substring(0, 6) == "Error:")
+            if (statInformationXml[..6] == "Error:")
             {
-                CurrywareLogHandler.AddLog("Error getting stats from Yahoo API", LogLevel.Error);
+                // CurrywareLogHandler.AddLog("Error getting stats from Yahoo API", LogLevel.Error);
+                Log.Error("Error getting stats from Yahoo API");
                 return "Error";
             }
-            CurrywareLogHandler.AddLog("Got stats XML", LogLevel.Debug);
+            // CurrywareLogHandler.AddLog("Got stats XML", LogLevel.Debug);
+            Log.Debug("Got stats XML");
             
             statsJson = WeeklyStatParser.WeeklyStats(statInformationXml, oAuthToken, gameId);
-            if (statsJson.Substring(0, 6) == "Error:")
+            if (statsJson[..6] == "Error:")
             {
-                CurrywareLogHandler.AddLog("Error getting stats from Yahoo API", LogLevel.Error);
+                // CurrywareLogHandler.AddLog("Error getting stats from Yahoo API", LogLevel.Error);
+                Log.Error("Error getting stats from Yahoo API");
             }
         }
         return statsJson;

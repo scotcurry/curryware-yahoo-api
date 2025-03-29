@@ -1,8 +1,6 @@
 ﻿using Confluent.Kafka;
 using Confluent.Kafka.Admin;
-using Microsoft.Extensions.Logging;
-
-using curryware_log_handler;
+using Serilog;
 
 namespace curryware_kafka_producer_library;
 
@@ -18,19 +16,21 @@ public abstract class KafkaAdmin
         }
         catch (KafkaValidationException kafkaException)
         {
-            CurrywareLogHandler.AddLog(kafkaException.Message, LogLevel.Error);
+            // CurrywareLogHandler.AddLog(kafkaException.Message, LogLevel.Error);
+            Log.Error(kafkaException.Message);
             throw;
         }
         
         var bootStrapServers = Environment.GetEnvironmentVariable("KAFKA_BOOTSTRAP_SERVER");
         if (bootStrapServers == null)
         {
-            CurrywareLogHandler.AddLog(errorString, LogLevel.Error);
+            // CurrywareLogHandler.AddLog(errorString, LogLevel.Error);
+            Log.Error(errorString);
             var errorList = new List<string> { errorString };
             return errorList;
         }
 
-        var adminConfig = new AdminClientConfig()
+        var adminConfig = new AdminClientConfig
         {
             BootstrapServers = bootStrapServers
         };
@@ -72,7 +72,8 @@ public abstract class KafkaAdmin
         }
         catch (CreateTopicsException e)
         {
-            Console.WriteLine($"Failed to create topic: {e.Error.Reason}");
+            // Console.WriteLine($"Failed to create topic: {e.Error.Reason}");
+            Log.Error($"Failed to create topic: {e.Error.Reason}");
         }
         
         return topicCreated;

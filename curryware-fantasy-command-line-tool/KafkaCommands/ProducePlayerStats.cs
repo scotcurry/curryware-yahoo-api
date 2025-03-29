@@ -1,8 +1,5 @@
-using System.Text.Json;
-using curryware_data_models;
 using curryware_kafka_producer_library;
-using curryware_log_handler;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace curryware_fantasy_command_line_tool.KafkaCommands;
 
@@ -19,7 +16,8 @@ internal abstract class ProducePlayerStats
         }
         catch (KafkaValidationException kafkaValidationException)
         {
-            CurrywareLogHandler.AddLog(kafkaValidationException.Message, LogLevel.Error);
+            // CurrywareLogHandler.AddLog(kafkaValidationException.Message, LogLevel.Error);
+            Log.Error(kafkaValidationException.Message);
             return false;
         }
     }

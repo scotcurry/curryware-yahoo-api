@@ -17,7 +17,12 @@
       "applicationUrl": "http://localhost:5126",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "KAFKA_BOOTSTRAP_SERVER": "ubuntu-postgres.curryware.org:9092"
+        "KAFKA_BOOTSTRAP_SERVER": "localhost:9092",
+        "POSTGRES_SERVER": "localhost",
+        "POSTGRES_PORT": "5432",
+        "POSTGRES_USERNAME": "scot",
+        "POSTGRES_PASSWORD": "AirWatch1",
+        "POSTGRES_DATABASE": "currywarefantasy"
       }
     },
     "https": {

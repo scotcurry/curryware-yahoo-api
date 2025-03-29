@@ -1,8 +1,7 @@
 using System.Text.Json;
 using System.Xml.Linq;
-using curryware_yahoo_parsing_library.LogHandler;
 using curryware_yahoo_parsing_library.TransactionModels;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace curryware_yahoo_parsing_library.XmlParsers.TransactionParser;
 
@@ -65,7 +64,7 @@ internal abstract class LeagueTransactionsParser
             if (playerEffectedNode == null) continue;
                 var playerList = ParsePlayerData(playerEffectedNode, fantasyNameSpace);
 
-            var transactionInfo = new TransactionModel()
+            var transactionInfo = new TransactionModel
             {
                 TransactionKey = transactionKey,
                 TransactionId = transactionId,
@@ -79,7 +78,7 @@ internal abstract class LeagueTransactionsParser
             transactionList.Add(transactionInfo);
         }
 
-        var transactionWithCount = new TransactionListWithCount()
+        var transactionWithCount = new TransactionListWithCount
         {
             TransactionCount = totalTransactions,
             Transactions = transactionList
@@ -90,7 +89,8 @@ internal abstract class LeagueTransactionsParser
             WriteIndented = false
         };
         var json = JsonSerializer.Serialize(transactionWithCount, serializerOptions);
-        CurrywareLogHandler.AddLog($"Processed: {totalTransactions} transactions", LogLevel.Debug);
+        // CurrywareLogHandler.AddLog($"Processed: {totalTransactions} transactions", LogLevel.Debug);
+        Log.Debug("\"Processed: {totalTransactions}",  totalTransactions);
         return json;
     }
 
