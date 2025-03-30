@@ -1,8 +1,7 @@
 using System.Text.Json;
 using curryware_data_models;
 using curryware_fantasy_command_line_tool.KafkaCommands;
-using curryware_log_handler;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace curryware_fantasy_command_line_tool.StatsCommands;
 
@@ -18,11 +17,13 @@ public abstract class AddStatsToKafkaQueue
         }
         catch (JsonException jsonException)
         {
-            CurrywareLogHandler.AddLog(jsonException.Message, LogLevel.Error);
+            // CurrywareLogHandler.AddLog(jsonException.Message, LogLevel.Error);
+            Log.Error(jsonException.Message);
         }
         catch (NotSupportedException notSupportedException)
         {
-            CurrywareLogHandler.AddLog(notSupportedException.Message, LogLevel.Error);
+            // CurrywareLogHandler.AddLog(notSupportedException.Message, LogLevel.Error);
+            Log.Error(notSupportedException.Message);
         }
 
         if (statsJson?.PlayerStats == null) return success;

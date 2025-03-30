@@ -2,7 +2,7 @@ using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging;
 
 using curryware_fantasy_command_line_tool.CommandLineModels;
-using curryware_log_handler;
+using Serilog;
 
 namespace curryware_fantasy_command_line_tool.CommandLineHandlers;
 
@@ -19,6 +19,32 @@ public abstract class CommandLineParser
             throw new InvalidParameterException("No Top Level Command Provided.");
         
         return returnObject;
+    }
+
+    public static GameStatsCommandLineParameters GameStatsParametersRest (Dictionary<string, string?> args)
+    {
+        var gameStatInformation = new GameStatsCommandLineParameters
+        {
+            LeagueId = Convert.ToInt32(args["leagueId"]),
+            GameId = Convert.ToInt32(args["gameId"]),
+            Week = Convert.ToInt32(args["week"]),
+            PlayerPosition = args["position"] as string
+        };
+        
+        return gameStatInformation;
+    }
+
+    public static PlayerCommandLineParameters PlayerLoadParametersRest(Dictionary<string, string?> args)
+    {
+        var leagueInformation = new PlayerCommandLineParameters
+        {
+            LeagueId = Convert.ToInt32(args["leagueId"]),
+            GameId = Convert.ToInt32(args["gameId"]),
+            PlayerPosition = args["position"] as string,
+            PlayerStatus = args["status"] as string
+        };
+        
+        return leagueInformation;
     }
     
     private static object ParsePlayerCommandLine(string[] args)
@@ -46,15 +72,16 @@ public abstract class CommandLineParser
         {
             if (gameIdIndex == totalCommandLineLength - 1)
             {
-                CurrywareLogHandler.AddLog("Game ID was not provided.", LogLevel.Error);
-                Console.WriteLine("A gameID must be provided.");
+                // CurrywareLogHandler.AddLog("Game ID was not provided.", LogLevel.Error);
+                Log.Error("Game ID was not provided.");
                 throw new InvalidParameterException("A gameID must be provided.");
             }
             
             var gameIdValue = args[gameIdIndex + 1];
             if (gameIdValue.Length < 1)
             {
-                CurrywareLogHandler.AddLog("Game ID was not provided.", LogLevel.Error);
+                // CurrywareLogHandler.AddLog("Game ID was not provided.", LogLevel.Error);
+                Log.Error("Game ID was not provided.");
                 throw new InvalidParameterException("A gameID must be provided.");
             }
             else
@@ -63,8 +90,8 @@ public abstract class CommandLineParser
                 string pattern = @"^\d{3}$";
                 if (!Regex.IsMatch(gameIdValue, pattern))
                 {
-                    CurrywareLogHandler.AddLog("Game ID was not provided.", LogLevel.Error);
-                    Console.WriteLine("Game ID must be a 3 digits.");
+                    // CurrywareLogHandler.AddLog("Game ID was not provided.", LogLevel.Error);
+                    Log.Error("Game ID was not provided."); ;
                     throw new InvalidParameterException("Game ID must be a 3 digits.");
                 }
 
@@ -77,15 +104,16 @@ public abstract class CommandLineParser
         {
             if (leagueIdIndex == totalCommandLineLength - 1)
             {
-                CurrywareLogHandler.AddLog("League ID was not provided.", LogLevel.Error);
-                Console.WriteLine("A leagueId must be provided.");
+                // CurrywareLogHandler.AddLog("League ID was not provided.", LogLevel.Error);
+                Log.Error("League ID was not provided.");
                 throw new InvalidParameterException("A leagueId must be provided.");
             }
             
             var leagueIdValue = args[leagueIdIndex + 1];
             if (leagueIdValue.Length < 1)
             {
-                CurrywareLogHandler.AddLog("League ID was not provided.", LogLevel.Error);
+                // CurrywareLogHandler.AddLog("League ID was not provided.", LogLevel.Error);
+                Log.Error("League ID was not provided.");
                 throw new InvalidParameterException("A leagueId must be provided.");
             }
             else
@@ -94,8 +122,8 @@ public abstract class CommandLineParser
                 var pattern = @"^\d{2,6}$";
                 if (!Regex.IsMatch(leagueIdValue, pattern))
                 {
-                    CurrywareLogHandler.AddLog("League ID was not provided.", LogLevel.Error);
-                    Console.WriteLine("League ID must be between 2 and 6 digits.");
+                    // CurrywareLogHandler.AddLog("League ID was not provided.", LogLevel.Error);
+                    Log.Error("League ID was not provided.");
                     throw new InvalidOptionException("League ID must be between 2 and 6 digits.");
                 }
 
@@ -109,8 +137,8 @@ public abstract class CommandLineParser
         {
             if (positionIndex == args.Length)
             {
-                CurrywareLogHandler.AddLog("Position was not provided. Must be [QB, RB, WR, TE, K, or D", LogLevel.Error);
-                Console.WriteLine("A position must be provided. Must be [QB, RB, WR, TE, K, or D");
+                // CurrywareLogHandler.AddLog("Position was not provided. Must be [QB, RB, WR, TE, K, or D", LogLevel.Error);
+                Log.Error("Position was not provided. Must be [QB, RB, WR, TE, K, or D");
                 throw new InvalidOptionException("A position must be provided. Must be [QB, RB, WR, TE, K, or D");
             }
 
@@ -140,8 +168,8 @@ public abstract class CommandLineParser
         if (statusIndex == -1) return playerCommandLineParameters;
         if (statusIndex == args.Length)
         {
-            CurrywareLogHandler.AddLog("Status was not provided. Must be [A, FA, W, or T", LogLevel.Error);
-            Console.WriteLine("A status must be provided. Must be [A, FA, W, or T");
+            // CurrywareLogHandler.AddLog("Status was not provided. Must be [A, FA, W, or T", LogLevel.Error);
+            Log.Error("Status was not provided. Must be [A, FA, W, or T");
             throw new InvalidOptionException("Status was not provided. Must be [A, FA, W, or T");
         }
 
@@ -192,15 +220,16 @@ public abstract class CommandLineParser
         {
             if (gameIdIndex == totalCommandLineLength - 1)
             {
-                CurrywareLogHandler.AddLog("Game ID was not provided.", LogLevel.Error);
-                Console.WriteLine("A gameID must be provided.");
+                // CurrywareLogHandler.AddLog("Game ID was not provided.", LogLevel.Error);
+                Log.Error("Game ID was not provided.");
                 throw new InvalidParameterException("A gameID must be provided.");
             }
             
             var gameIdValue = args[gameIdIndex + 1];
             if (gameIdValue.Length < 1)
             {
-                CurrywareLogHandler.AddLog("Game ID was not provided.", LogLevel.Error);
+                // CurrywareLogHandler.AddLog("Game ID was not provided.", LogLevel.Error);
+                Log.Error("Game ID was not provided.");
                 throw new InvalidParameterException("A gameID must be provided.");
             }
             else
@@ -209,8 +238,8 @@ public abstract class CommandLineParser
                 string pattern = @"^\d{3}$";
                 if (!Regex.IsMatch(gameIdValue, pattern))
                 {
-                    CurrywareLogHandler.AddLog("Game ID was not provided.", LogLevel.Error);
-                    Console.WriteLine("Game ID must be a 3 digits.");
+                   // CurrywareLogHandler.AddLog("Game ID was not provided.", LogLevel.Error);
+                   Log.Error("Game ID was not provided.");
                     throw new InvalidParameterException("Game ID must be a 3 digits.");
                 }
 
@@ -223,15 +252,16 @@ public abstract class CommandLineParser
         {
             if (leagueIdIndex == totalCommandLineLength - 1)
             {
-                CurrywareLogHandler.AddLog("League ID was not provided.", LogLevel.Error);
-                Console.WriteLine("A leagueId must be provided.");
+                // CurrywareLogHandler.AddLog("League ID was not provided.", LogLevel.Error);
+                Log.Error("League ID was not provided.");
                 throw new InvalidParameterException("A leagueId must be provided.");
             }
             
             var leagueIdValue = args[leagueIdIndex + 1];
             if (leagueIdValue.Length < 1)
             {
-                CurrywareLogHandler.AddLog("League ID was not provided.", LogLevel.Error);
+                // CurrywareLogHandler.AddLog("League ID was not provided.", LogLevel.Error);
+                Log.Error("League ID was not provided.");
                 throw new InvalidParameterException("A leagueId must be provided.");
             }
             else
@@ -240,8 +270,8 @@ public abstract class CommandLineParser
                 var pattern = @"^\d{2,6}$";
                 if (!Regex.IsMatch(leagueIdValue, pattern))
                 {
-                    CurrywareLogHandler.AddLog("League ID was not provided.", LogLevel.Error);
-                    Console.WriteLine("League ID must be between 2 and 6 digits.");
+                    // CurrywareLogHandler.AddLog("League ID was not provided.", LogLevel.Error);
+                    Log.Error("League ID was not provided.");
                     throw new InvalidOptionException("League ID must be between 2 and 6 digits.");
                 }
 
@@ -254,8 +284,7 @@ public abstract class CommandLineParser
         {
             if (weekIdIndex == totalCommandLineLength)
             {
-                CurrywareLogHandler.AddLog("Week ID was not provided.", LogLevel.Error);
-                Console.WriteLine("A weekId must be provided.");
+                Log.Error("Week ID was not provided.");
                 throw new InvalidOptionException("A weekId must be provided.");
             }
             else
@@ -265,8 +294,8 @@ public abstract class CommandLineParser
                 var pattern = @"^(1[0-7]|[1-9])$";
                 if (!Regex.IsMatch(weekIdValue, pattern))
                 {
-                    CurrywareLogHandler.AddLog("Week ID has to be between 1 and 17", LogLevel.Error);
-                    Console.WriteLine("Week ID must be between 1 and 17.");
+                    // CurrywareLogHandler.AddLog("Week ID has to be between 1 and 17", LogLevel.Error);
+                    Log.Error("Week ID has to be between 1 and 17");
                     throw new InvalidOptionException("Week must be between 1 and 17.");
                 }
 
@@ -278,8 +307,8 @@ public abstract class CommandLineParser
         
         if (positionIndex == totalCommandLineLength)
         {
-            CurrywareLogHandler.AddLog("Position was not provided.", LogLevel.Error);
-            Console.WriteLine("A position must be provided.");
+            // CurrywareLogHandler.AddLog("Position was not provided.", LogLevel.Error);
+            Log.Error("Position was not provided.");
             throw new InvalidOptionException("A position must be provided.");
         }
         else

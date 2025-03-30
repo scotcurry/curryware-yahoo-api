@@ -1,9 +1,8 @@
 using System.Xml;
 using System.Text.Json;
 using System.Xml.Linq;
-using curryware_yahoo_parsing_library.LogHandler;
 using curryware_data_models;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace curryware_yahoo_parsing_library.XmlParsers.LeaguePlayers;
 
@@ -28,22 +27,22 @@ internal abstract class LeaguePlayerParser
                 playersOnPage = int.Parse(firstNode.Attribute("count")!.Value);
             }
 
-            var availablePlayers = playersNode.Any();
+            var availablePlayers = playersNode.Length != 0;
             if (!availablePlayers) return string.Empty;
 
             foreach (var currentPlayer in players)
             {
                 const int defenseIds = 100000;
-                string playerKey = string.Empty;
-                int playerId = 0;
-                string fullName = string.Empty;
-                string url = string.Empty;
-                string status = string.Empty;
-                string team = string.Empty;
-                int byeWeek = 0;
-                int uniformNumber = 0;
-                string headShot = string.Empty;
-                string primaryPosition = string.Empty;
+                var playerKey = string.Empty;
+                var playerId = 0;
+                var fullName = string.Empty;
+                var url = string.Empty;
+                var status = string.Empty;
+                var team = string.Empty;
+                var byeWeek = 0;
+                var uniformNumber = 0;
+                var headShot = string.Empty;
+                var primaryPosition = string.Empty;
 
                 // var node = currentPlayer.DescendantNodes();
                 if (currentPlayer.Element(fantasyNameSpace + "player_id") != null)
@@ -92,7 +91,7 @@ internal abstract class LeaguePlayerParser
                 if (currentPlayer.Element(fantasyNameSpace + "uniform_number") != null && playerId < defenseIds)
                 {
                     var uniformNumberString = currentPlayer.Element(fantasyNameSpace + "uniform_number")!.Value;
-                    uniformNumber = uniformNumberString != String.Empty ? int.Parse(currentPlayer.Element(fantasyNameSpace + "uniform_number")!.Value) : 0;
+                    uniformNumber = uniformNumberString != string.Empty ? int.Parse(currentPlayer.Element(fantasyNameSpace + "uniform_number")!.Value) : 0;
                 }
 
                 if (currentPlayer.Element(fantasyNameSpace + "primary_position") != null)
@@ -128,14 +127,16 @@ internal abstract class LeaguePlayerParser
         }
         catch (XmlException xmlException)
         {
-            CurrywareLogHandler.AddLog(xmlException.Message, LogLevel.Error);
-            CurrywareLogHandler.AddLog("Error: Failed to parse league information", LogLevel.Error);
+            // CurrywareLogHandler.AddLog(xmlException.Message, LogLevel.Error);
+            Log.Error(xmlException, "Error: Failed to parse league information");
+            // CurrywareLogHandler.AddLog("Error: Failed to parse league information", LogLevel.Error);
             return "Error: Failed to parse league information";
         }
         catch (FormatException formatException)
         {
-            CurrywareLogHandler.AddLog(formatException.Message, LogLevel.Error);
-            CurrywareLogHandler.AddLog("Error: Failed to parse league information", LogLevel.Error);
+            // CurrywareLogHandler.AddLog(formatException.Message, LogLevel.Error);
+            Log.Error(formatException, "Error: Failed to parse league information");
+            // CurrywareLogHandler.AddLog("Error: Failed to parse league information", LogLevel.Error);
             return "Error: Failed to parse league information";
         }
 
@@ -143,14 +144,14 @@ internal abstract class LeaguePlayerParser
         {
             var serializerOptions = new JsonSerializerOptions
             {
-                WriteIndented = false,
+                WriteIndented = false
             };
 
             var playersWithCount = new PlayersListWithCount
             {
                 Players = playersList,
                 PlayerCount = playersOnPage,
-                OAuthToken = oauthToken,
+                OAuthToken = oauthToken
             };
 
             var json = JsonSerializer.Serialize(playersWithCount, serializerOptions);
@@ -158,14 +159,16 @@ internal abstract class LeaguePlayerParser
         }
         catch (ArgumentNullException argumentNullException)
         {
-            CurrywareLogHandler.AddLog(argumentNullException.Message, LogLevel.Error);
-            CurrywareLogHandler.AddLog("Error: Failed to serialize league stat settings", LogLevel.Error);
+            // CurrywareLogHandler.AddLog(argumentNullException.Message, LogLevel.Error);
+            Log.Error(argumentNullException, "Error: Failed to serialize league stat settings");
+            // CurrywareLogHandler.AddLog("Error: Failed to serialize league stat settings", LogLevel.Error);
             return "Error: Failed to serialize league information";
         }
         catch (InvalidCastException invalidCastException)
         {
-            CurrywareLogHandler.AddLog(invalidCastException.Message, LogLevel.Error);
-            CurrywareLogHandler.AddLog("Error: Failed to serialize league stat settings", LogLevel.Error);
+            // CurrywareLogHandler.AddLog(invalidCastException.Message, LogLevel.Error);
+            Log.Error(invalidCastException, "Error: Failed to serialize league stat settings");
+            // CurrywareLogHandler.AddLog("Error: Failed to serialize league stat settings", LogLevel.Error);
             return "Error: Failed to serialize league information";
         }
     }

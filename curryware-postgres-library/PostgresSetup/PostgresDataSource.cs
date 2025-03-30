@@ -6,7 +6,6 @@ public static class PostgresDataSource
 {
     static PostgresDataSource()
     {
-        var connectionString = PostgresConfig.GetConnectionString();
         DataSource = NpgsqlDataSource.Create(PostgresConfig.GetConnectionString());
     }
 

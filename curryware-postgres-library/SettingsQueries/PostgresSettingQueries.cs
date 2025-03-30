@@ -12,9 +12,11 @@ public abstract class PostgresSettingQueries
          return await PostgresQueryExecutor.ExecuteQueryAsync(async connection =>
         {
             var playerList = new List<SystemInformationModel>();
-            const string selectString = @"
-                SELECT system_id, system_value_name, system_value
-                FROM system_information";
+            const string selectString = """
+                                        
+                                                        SELECT system_id, system_value_name, system_value
+                                                        FROM system_information
+                                        """;
 
             await using var command = new NpgsqlCommand(selectString, connection);
 
@@ -25,7 +27,7 @@ public abstract class PostgresSettingQueries
                 var systemValueName = reader.GetString(reader.GetOrdinal("system_value_name"));
                 var systemValue = reader.GetString(reader.GetOrdinal("system_value"));
 
-                var playerModel = new SystemInformationModel()
+                var playerModel = new SystemInformationModel
                 {
                     SystemId = systemId,
                     SettingName = systemValueName,

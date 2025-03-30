@@ -36,7 +36,7 @@ public abstract class PostgresLibrary
                 var playerPosition = reader.GetString(reader.GetOrdinal("player_position"));
                 var playerHeadshot = reader.GetString(reader.GetOrdinal("player_headshot"));
 
-                var playerModel = new PlayerModel()
+                var playerModel = new PlayerModel
                 {
                     Id = playerId,
                     Key = playerSeasonKey,

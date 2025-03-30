@@ -1,10 +1,9 @@
 using System.Text.Json;
 using System.Xml;
 using System.Xml.Linq;
-using Microsoft.Extensions.Logging;
 
 using curryware_yahoo_parsing_library.LeagueModels;
-using curryware_yahoo_parsing_library.LogHandler;
+using Serilog;
 
 namespace curryware_yahoo_parsing_library.XmlParsers.LeagueParsers;
 
@@ -37,14 +36,16 @@ internal class LeagueStatValueParser
         }
         catch (XmlException xmlException)
         {
-            CurrywareLogHandler.AddLog(xmlException.Message, LogLevel.Error);
-            CurrywareLogHandler.AddLog("Error: Failed to parse league information", LogLevel.Error);
+            // CurrywareLogHandler.AddLog(xmlException.Message, LogLevel.Error);
+            Log.Error(xmlException, "Error: Failed to parse league information");
+            // CurrywareLogHandler.AddLog("Error: Failed to parse league information", LogLevel.Error);
             return "Error: Failed to parse league information";
         }
         catch (FormatException formatException)
         {
-            CurrywareLogHandler.AddLog(formatException.Message, LogLevel.Error);
-            CurrywareLogHandler.AddLog("Error: Failed to parse league information", LogLevel.Error);
+            // CurrywareLogHandler.AddLog(formatException.Message, LogLevel.Error);
+            Log.Error(formatException, "Error: Failed to parse league information");
+            // CurrywareLogHandler.AddLog("Error: Failed to parse league information", LogLevel.Error);
             return "Error: Failed to parse league information";
         }
         
@@ -52,7 +53,7 @@ internal class LeagueStatValueParser
         {
             var serializerOptions = new JsonSerializerOptions
             {
-                WriteIndented = false,
+                WriteIndented = false
             };
 
             var json = JsonSerializer.Serialize(leagueStatValues, serializerOptions);
@@ -60,14 +61,16 @@ internal class LeagueStatValueParser
         }
         catch (ArgumentNullException argumentNullException)
         {
-            CurrywareLogHandler.AddLog(argumentNullException.Message, LogLevel.Error);
-            CurrywareLogHandler.AddLog("Error: Failed to serialize league stat settings", LogLevel.Error);
-            return "Error: Failed to serialize league information";
+           // CurrywareLogHandler.AddLog(argumentNullException.Message, LogLevel.Error);
+           Log.Error(argumentNullException, "Error: Failed to serialize league stat settings");
+           //CurrywareLogHandler.AddLog("Error: Failed to serialize league stat settings", LogLevel.Error);
+           return "Error: Failed to serialize league information";
         }
         catch (InvalidCastException invalidCastException)
         {
-            CurrywareLogHandler.AddLog(invalidCastException.Message, LogLevel.Error);
-            CurrywareLogHandler.AddLog("Error: Failed to serialize league stat settings", LogLevel.Error);
+            // CurrywareLogHandler.AddLog(invalidCastException.Message, LogLevel.Error);
+            Log.Error(invalidCastException, "Error: Failed to serialize league stat settings");
+            // CurrywareLogHandler.AddLog("Error: Failed to serialize league stat settings", LogLevel.Error);
             return "Error: Failed to serialize league information";
         }
     }
@@ -79,11 +82,14 @@ internal class LeagueStatValueParser
 
         foreach (var currentNode in currentStatsNode.Descendants())
         {
-            if (currentNode.Name.LocalName == "stat_id")
-                statId = Convert.ToInt32(currentNode.Value);
-            if (currentNode.Name.LocalName == "value")
+            switch (currentNode.Name.LocalName)
             {
-                statValue = Convert.ToDecimal(currentNode.Value);
+                case "stat_id":
+                    statId = Convert.ToInt32(currentNode.Value);
+                    break;
+                case "value":
+                    statValue = Convert.ToDecimal(currentNode.Value);
+                    break;
             }
         }
 
@@ -98,7 +104,7 @@ internal class LeagueStatValueParser
         return leagueStat;
     }
     
-    private static Int64 BuildStatKey(string key, int statId)
+    private static long BuildStatKey(string key, int statId)
     {
         var statKeyParts = key.Split('.');
         var game = statKeyParts[0];

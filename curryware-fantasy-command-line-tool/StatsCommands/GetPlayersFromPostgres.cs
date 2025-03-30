@@ -1,8 +1,7 @@
 using System.Text.Json;
 using curryware_data_models;
-using curryware_log_handler;
 using curryware_postgres_library;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace curryware_fantasy_command_line_tool.StatsCommands;
 
@@ -15,7 +14,8 @@ public abstract class GetPlayersFromPostgres
         var players= GetPlayersFromJson(playerListJson);
         if (players.Count == 0)
         {
-            CurrywareLogHandler.AddLog("No players found for position.", LogLevel.Error);
+            // CurrywareLogHandler.AddLog("No players found for position.", LogLevel.Error);
+            Log.Error("no players found for position");
             return [];
         }
         
@@ -37,17 +37,20 @@ public abstract class GetPlayersFromPostgres
                 return allPlayersList;
             }
 
-            CurrywareLogHandler.AddLog("No players found.", LogLevel.Error);
+            // CurrywareLogHandler.AddLog("No players found.", LogLevel.Error);
+            Log.Error("No players found.");
             return [];
         }
         catch (ArgumentNullException argumentNullException)
         {
-            CurrywareLogHandler.AddLog(argumentNullException.Message, LogLevel.Error);
+            // CurrywareLogHandler.AddLog(argumentNullException.Message, LogLevel.Error);
+            Log.Error(argumentNullException.Message);
             return [];
         }
         catch (JsonException jsonException)
         {
-            CurrywareLogHandler.AddLog(jsonException.Message, LogLevel.Error);
+            // CurrywareLogHandler.AddLog(jsonException.Message, LogLevel.Error);
+            Log.Error(jsonException.Message);
             return [];
         }
     }

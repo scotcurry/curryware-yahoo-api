@@ -14,6 +14,7 @@
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="7.1.0" />
+        <PackageReference Include="xunit" Version="2.9.3" />
     </ItemGroup>
 
     <ItemGroup>
@@ -23,7 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="TransactionModels\" />
+      <ProjectReference Include="..\curryware-fantasy-command-line-tool-tests\curryware-fantasy-command-line-tool-tests.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,8 +1,7 @@
 using curryware_yahoo_parsing_library.HttpHandler;
-using curryware_yahoo_parsing_library.LogHandler;
 using curryware_yahoo_parsing_library.FirebaseOAuthCallHandler;
 using curryware_yahoo_parsing_library.XmlParsers.LeaguePlayers;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace curryware_yahoo_parsing_library.PlayerApis;
 
@@ -22,32 +21,36 @@ public abstract class GetAllPlayersApi
         else if (position != "None")
             playerEndpoint += "?position=" + position;
         
-        if (playerEndpoint.Contains("?"))
+        if (playerEndpoint.Contains('?'))
             playerEndpoint += "&start=" + startNumber;
         else
             playerEndpoint += "?start=" + startNumber;
         
-        CurrywareLogHandler.AddLog("Calling League Information API: " + playerEndpoint, LogLevel.Debug);
+        // CurrywareLogHandler.AddLog("Calling League Information API: " + playerEndpoint, LogLevel.Debug);
+        Log.Debug("Calling League Information API: " + playerEndpoint);
 
         if (oAuthToken == "NoToken")
         {
             oAuthToken = await FirebaseOAuthCall.GetOAuthTokenFromFirebase();
-            if (oAuthToken.Substring(0, 6) == "Error:")
+            if (oAuthToken[..6] == "Error:")
                 return null;
-            CurrywareLogHandler.AddLog("Got OAuth Token from Firebase", LogLevel.Debug);
+            // CurrywareLogHandler.AddLog("Got OAuth Token from Firebase", LogLevel.Debug);
+            Log.Debug(string.Concat("Got OAuth Token from Firebase: ", oAuthToken.AsSpan(0, 12)));
         }
 
         var playerInformationXml = await HttpRequestHandler.MakeYahooApiCall(playerEndpoint,
             oAuthToken);
-        if (playerInformationXml.Substring(0, 6) == "Error:")
+        if (playerInformationXml[..6] == "Error:")
             return null;
-        CurrywareLogHandler.AddLog("Got League Information XML", LogLevel.Debug);
+        // CurrywareLogHandler.AddLog("Got League Information XML", LogLevel.Debug);
+        Log.Debug(string.Concat("Got Player Information XML: ", playerInformationXml.AsSpan(0, 40), ""));
 
         var allPlayersJson = LeaguePlayerParser.GetParseLeaguePlayerXml(playerInformationXml, oAuthToken);
-        if (allPlayersJson.Substring(0, 6) == "Error:")
+        if (allPlayersJson[..6] == "Error:")
             return null;
 
-        CurrywareLogHandler.AddLog("Got League Information JSON", LogLevel.Debug);
+        // CurrywareLogHandler.AddLog("Got League Information JSON", LogLevel.Debug);
+        Log.Debug(string.Concat("Got Player Information JSON: ", allPlayersJson.AsSpan(0, 40), ""));
         return allPlayersJson;
     }
 }
