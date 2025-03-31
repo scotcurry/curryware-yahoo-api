@@ -42,7 +42,7 @@ public abstract class PlayerCommand
 
             if (playerJson == null) continue;
             // CurrywareLogHandler.AddLog("PlayerJson: " + playerJson.Substring(20) + "...", LogLevel.Debug);
-            Log.Debug(string.Concat("PlayerJson: ", playerJson.AsSpan(20), "..."));
+            Log.Debug(string.Concat("PlayerJson: ", playerJson.AsSpan(1, 40), "..."));
             var playersModel = JsonSerializer.Deserialize<PlayersListWithCount>(playerJson);
             if (playersModel == null) continue;
             if (playersModel.Players?.Count < 25)

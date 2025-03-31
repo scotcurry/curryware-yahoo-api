@@ -53,7 +53,7 @@ public abstract class KafkaProducer
              var producer = new ProducerBuilder<string, string>(config).Build();
              var deliveryReport = await producer.ProduceAsync(topic, message);
              // CurrywareLogHandler.AddLog($"Delivered '{deliveryReport.Value}' to '{deliveryReport.TopicPartitionOffset}'", LogLevel.Information);
-             Log.Debug($"Delivered '{deliveryReport.Value}' to '{deliveryReport.TopicPartitionOffset}'");
+             Log.Debug($"Delivered '{deliveryReport.Value.AsSpan(1,40)}' to '{deliveryReport.TopicPartitionOffset}'");
          
              producer.Flush(TimeSpan.FromSeconds(10));
              // CurrywareLogHandler.AddLog("Flushing", LogLevel.Information);

@@ -43,14 +43,14 @@ public abstract class GetAllPlayersApi
         if (playerInformationXml[..6] == "Error:")
             return null;
         // CurrywareLogHandler.AddLog("Got League Information XML", LogLevel.Debug);
-        Log.Debug(string.Concat("Got Player Information XML: ", playerInformationXml.AsSpan(0, 40), ""));
+        Log.Debug(string.Concat("Got Player Information XML: ", playerInformationXml.AsSpan(0, 80), ""));
 
         var allPlayersJson = LeaguePlayerParser.GetParseLeaguePlayerXml(playerInformationXml, oAuthToken);
         if (allPlayersJson[..6] == "Error:")
             return null;
 
         // CurrywareLogHandler.AddLog("Got League Information JSON", LogLevel.Debug);
-        Log.Debug(string.Concat("Got Player Information JSON: ", allPlayersJson.AsSpan(0, 40), ""));
+        Log.Debug(string.Concat("Got Player Information JSON: ", allPlayersJson.AsSpan(0, 80), ""));
         return allPlayersJson;
     }
 }

@@ -25,6 +25,12 @@
 
     <ItemGroup>
       <ProjectReference Include="..\curryware-fantasy-command-line-tool-tests\curryware-fantasy-command-line-tool-tests.csproj" />
+      <ProjectReference Include="..\curryware-fantasy-command-line-tool\curryware-fantasy-command-line-tool.csproj" />
+      <ProjectReference Include="..\curryware-yahoo-parsing-library\curryware-yahoo-parsing-library.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="XMLParsers\" />
     </ItemGroup>
 
 </Project>

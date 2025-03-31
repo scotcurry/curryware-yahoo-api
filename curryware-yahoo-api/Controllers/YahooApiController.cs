@@ -1,16 +1,13 @@
-// using curryware_yahoo_api.FirebaseOAuthCallHandler;
-// using curryware_yahoo_api.JsonHandlers;
-// using curryware_yahoo_api.LogHandler;
-// using curryware_yahoo_api.PlayerApis;
-
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Mvc;
-//using curryware_yahoo_api.TeamApis;
+using System.Threading.Tasks;
 using curryware_fantasy_command_line_tool.CommandLineHandlers;
-using curryware_fantasy_command_line_tool.StatsCommands;
 using curryware_fantasy_command_line_tool.PlayerCommands;
-using Serilog;
+using curryware_fantasy_command_line_tool.StatsCommands;
 using curryware_yahoo_parsing_library.FirebaseOAuthCallHandler;
+using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace curryware_yahoo_api.Controllers;
 

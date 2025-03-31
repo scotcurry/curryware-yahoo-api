@@ -10,8 +10,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "curryware-yahoo-parsing-lib
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "curryware-kafka-producer-library", "curryware-kafka-producer-library\curryware-kafka-producer-library.csproj", "{0CCA4D21-3FE3-438C-816C-6E30986B43CD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "curryware-log-handler", "curryware-log-handler\curryware-log-handler.csproj", "{B81793D0-4EE3-4766-A7AD-470D12324290}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "curryware-postgres-library", "curryware-postgres-library\curryware-postgres-library.csproj", "{B5304134-A684-4E66-8652-AA78938FA122}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "curryware-data-models", "curryware-data-models\curryware-data-models.csproj", "{9A7F3668-508A-4CDE-A7EE-227A00731B26}"
@@ -21,6 +19,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "curryware-postgres-library-tests", "curryware-postgres-library-tests\curryware-postgres-library-tests.csproj", "{BBD44C99-0A92-48AE-AA3E-1E5B7594F6A4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "curryware-yahoo-parsing-library-tests", "curryware-yahoo-parsing-library-tests\curryware-yahoo-parsing-library-tests.csproj", "{B82F8F51-BC87-41FB-859F-864527324C54}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "curryware-fantasy-command-line-tool-tests", "curryware-fantasy-command-line-tool-tests\curryware-fantasy-command-line-tool-tests.csproj", "{0870B7A8-AEB1-4209-AC26-702EDE7764F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,10 +44,6 @@ Global
 		{0CCA4D21-3FE3-438C-816C-6E30986B43CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CCA4D21-3FE3-438C-816C-6E30986B43CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CCA4D21-3FE3-438C-816C-6E30986B43CD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B81793D0-4EE3-4766-A7AD-470D12324290}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B81793D0-4EE3-4766-A7AD-470D12324290}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B81793D0-4EE3-4766-A7AD-470D12324290}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B81793D0-4EE3-4766-A7AD-470D12324290}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B5304134-A684-4E66-8652-AA78938FA122}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B5304134-A684-4E66-8652-AA78938FA122}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5304134-A684-4E66-8652-AA78938FA122}.Release|Any CPU.ActiveCfg = Release|Any CPU
