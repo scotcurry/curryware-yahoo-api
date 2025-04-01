@@ -9,20 +9,20 @@ public abstract class PostgresLibrary
 {
     public static async Task<string> GetPlayerIdsByPosition(string position = "QB")
     {
-        return await PostgresQueryExecutor.ExecuteQueryAsync(async connection =>
+        var connection = new NpgsqlConnection(PostgresConfig.GetConnectionString());
+        const string selectString = """
+                                                    SELECT player_id, player_season_key, player_name, player_url,
+                                                       player_team, player_bye_week, player_uniform_number, 
+                                                       player_position, player_headshot
+                                                  FROM player_info 
+                                                 WHERE player_position = @position
+                                    """;
+
+        var playerList = new List<PlayerModel>();
+        await connection.OpenAsync();
+        await using (var command = new NpgsqlCommand(selectString, connection))
         {
-            var playerList = new List<PlayerModel>();
-            const string selectString = """
-                                                        SELECT player_id, player_season_key, player_name, player_url,
-                                                           player_team, player_bye_week, player_uniform_number, 
-                                                           player_position, player_headshot
-                                                      FROM player_info 
-                                                     WHERE player_position = @position
-                                        """;
-
-            await using var command = new NpgsqlCommand(selectString, connection);
             command.Parameters.AddWithValue("position", position);
-
             var reader = await command.ExecuteReaderAsync();
             while (await reader.ReadAsync())
             {
@@ -51,8 +51,7 @@ public abstract class PostgresLibrary
 
                 playerList.Add(playerModel);
             }
-
-            return JsonSerializer.Serialize(playerList);
-        });
+        }
+        return JsonSerializer.Serialize(playerList);
     }
 }

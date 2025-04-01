@@ -18,7 +18,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "KAFKA_BOOTSTRAP_SERVER": "localhost:9092",
-        "POSTGRES_SERVER": "localhost",
+        "POSTGRES_SERVER": "postgres.curryware.org",
         "POSTGRES_PORT": "5432",
         "POSTGRES_USERNAME": "scot",
         "POSTGRES_PASSWORD": "AirWatch1",

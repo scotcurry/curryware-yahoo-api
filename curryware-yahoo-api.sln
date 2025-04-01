@@ -64,5 +64,7 @@ Global
 		{B82F8F51-BC87-41FB-859F-864527324C54}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B82F8F51-BC87-41FB-859F-864527324C54}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B82F8F51-BC87-41FB-859F-864527324C54}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0870B7A8-AEB1-4209-AC26-702EDE7764F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0870B7A8-AEB1-4209-AC26-702EDE7764F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal
