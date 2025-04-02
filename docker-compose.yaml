@@ -8,6 +8,11 @@ services:
       - "8087:8087"
     depends_on:
       - postgres
+    environment:
+      DD_ENV: prod
+      DD_SERVICE: curryware-yahoo-api
+      DD_VERSION: 76
+      
         
   postgres:
     image: postgres:latest
