@@ -67,7 +67,10 @@ jobs:
             tags.datadoghq.com/env=prod
             tags.datadoghq.com/version=${{ github.run_number }}
             tags.datadoghq.com/service=curryware-yahoo-api
-      
+          build-args: |
+            DD_GIT_REPOSITORY_URL=github.com/scotcurry/curryware-yahoo-api
+            DD_GIT_COMMIT_SHA=${{ github.sha }}
+            
       # Check out the K8s manifest files for updating
       - name: Get manifest files
         uses: actions/checkout@v4
