@@ -11,8 +11,8 @@ public class LeagueStatSettingsTest(ITestOutputHelper output)
     {
         output.WriteLine("Get League Information");
         var leagueInformationApi = new LeagueStatSettingsApi();
-        var leagueJson = await LeagueStatSettingsApi.GetLeagueScoringInformation(13407, 461);
-        var leagueKey = leagueJson?.Substring(18, 10);
-        Assert.Equal(4494835214, Convert.ToInt64(leagueKey));
+        var leagueJson = await LeagueStatSettingsApi.GetLeagueScoringInformation(461, 13407);
+        var leagueKey = leagueJson?.Substring(18, 9);
+        Assert.Equal(461134074, Convert.ToInt64(leagueKey));
     }
 }

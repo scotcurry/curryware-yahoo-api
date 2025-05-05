@@ -2,7 +2,6 @@ using System.Text.Json;
 using System.Xml;
 using System.Xml.Linq;
 using curryware_yahoo_parsing_library.LeagueModels;
-using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace curryware_yahoo_parsing_library.XmlParsers.LeagueParsers;
