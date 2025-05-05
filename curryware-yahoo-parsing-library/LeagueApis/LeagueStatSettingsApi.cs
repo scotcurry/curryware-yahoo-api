@@ -7,7 +7,7 @@ namespace curryware_yahoo_parsing_library.LeagueApis;
 
 public class LeagueStatSettingsApi
 {
-    public static async Task<string?> GetLeagueScoringInformation(int leagueId = 483521, int gameId = 449)
+    public static async Task<string?> GetLeagueScoringInformation(int gameId, int leagueId)
     {
         // This is the endpoint for the league information.
         var leagueSettingEndpoint =

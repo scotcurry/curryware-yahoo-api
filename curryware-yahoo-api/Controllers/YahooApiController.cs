@@ -5,8 +5,11 @@ using System.Threading.Tasks;
 using curryware_fantasy_command_line_tool.CommandLineHandlers;
 using curryware_fantasy_command_line_tool.PlayerCommands;
 using curryware_fantasy_command_line_tool.StatsCommands;
+using curryware_kafka_producer_library;
 using curryware_yahoo_parsing_library.FirebaseOAuthCallHandler;
+using curryware_yahoo_parsing_library.LeagueApis;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Serilog;
 
 namespace curryware_yahoo_api.Controllers;
@@ -140,5 +143,45 @@ public class YahooApiController : Controller
         var totalBatches = await PlayerCommand.RunGetPlayersCommand(playerCommandLineParameters);
         
         return Ok(totalBatches);
+    }
+
+    [HttpGet]
+    [Route("LoadStatInfo")]
+    public async Task<IActionResult> LoadStatInfo([Required] int gameId, [Required] int leagueId)
+    {
+        Log.Information($"Calling LoadStatInfo for gameId: {gameId}, leagueId: {leagueId}");
+        var queryParameters = Request.Query;
+
+        Log.Information($"LoadStatInfo Parameters: {leagueId}, {gameId}");
+        var statsJson = await LeagueStatSettingsApi.GetLeagueScoringInformation(gameId, leagueId);
+
+        if (statsJson != null)
+        {
+            try
+            {
+                Log.Debug($"Writing statsJson to JSON ");
+                var kafkaTopic = "StatTopic";
+                var kafkaResult = await KafkaProducer.CreateKafkaMessage(kafkaTopic, statsJson);
+                if (kafkaResult)
+                    Log.Information("Wrote JSON to StatTopic Queue");
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
+        }
+        else
+        {
+            Log.Error("Error writing statsJson to JSON");
+        }
+        
+        return Ok("statsJson");
+        // CurrywareLogHandler.AddLog(debugString, LogLevel.Debug);
+        // Log.Debug(debugString);
+        // var playerCommandLineParameters = CommandLineParser.PlayerLoadParametersRest(playerCommandDictionary);
+        // var totalBatches = await PlayerCommand.RunGetPlayersCommand(playerCommandLineParameters);
+        
+        // return Ok(totalBatches);
     }
 }
