@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Threading.Tasks;
 using curryware_fantasy_command_line_tool.CommandLineHandlers;
 using curryware_fantasy_command_line_tool.PlayerCommands;
 using curryware_fantasy_command_line_tool.StatsCommands;
@@ -9,7 +6,6 @@ using curryware_kafka_producer_library;
 using curryware_yahoo_parsing_library.FirebaseOAuthCallHandler;
 using curryware_yahoo_parsing_library.LeagueApis;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Serilog;
 
 namespace curryware_yahoo_api.Controllers;
@@ -50,57 +46,7 @@ public class YahooApiController : Controller
             return Ok("Error");
         }
     }
-
-    // [HttpGet]
-    // [Route("GetLeagueStandings")]
-    // public async Task<IActionResult> GetLeagueStandings()
-    // {
-    //     foreach (var header in Request.Headers)
-    //     {
-    //         CurrywareLogHandler.AddLog($"{header.Key}: {header.Value}", LogLevel.Information);
-    //     }
-    //     
-    //     // Hard-coded for now.  Need to fix
-    //     var gameId = 449;
-    //     var leagueId = 483521;
-    //     
-    //     try
-    //     {
-    //         var leagueStandingClass = new LeagueStandings();
-    //         var leagueStandings = await leagueStandingClass.GetLeagueStandings(gameId, leagueId);
-    //         var jsonHandler = new DictionaryJsonHandler();
-    //         var json = jsonHandler.DictionaryToJsonString(leagueStandings);
-    //         return Ok(json);
-    //     }
-    //     catch (HttpRequestException ex)
-    //     {
-    //         CurrywareLogHandler.AddLog("HttpRequestException: " + ex.Message, LogLevel.Error);
-    //         return Unauthorized();
-    //     }
-    // }
-    
-    // [HttpGet]
-    // [Route("GetAllPlayers")]
-    // public async Task<IActionResult> GetLeagueInfo()
-    // {
-    //     var gameId = 449;
-    //     var leagueId = 483521;
-    //
-    //     Log.Information($"Calling GetAllPlayers for gameId: {gameId}, leagueId: {leagueId}");
-    //     try
-    //     {
-    //         var token = await FirebaseOAuthCall.GetOAuthTokenFromFirebase();
-    //         var playersApi = new GetAllPlayersApi();
-    //         var totalPlayers = await playersApi.GetAllPlayers(gameId, leagueId, token);
-    //         return Ok(totalPlayers);
-    //     }
-    //     catch (HttpRequestException ex)
-    //     {
-    //         CurrywareLogHandler.AddLog("HttpRequestException: " + ex.Message, LogLevel.Error);
-    //         return Unauthorized();
-    //     }
-    // }
-    
+  
     [HttpGet]
     [Route("LoadPlayerStatistics")]
     public async Task<IActionResult> LoadPlayerStatistics(int leagueId, int gameId, int weekNumber, string position)
@@ -150,8 +96,6 @@ public class YahooApiController : Controller
     public async Task<IActionResult> LoadStatInfo([Required] int gameId, [Required] int leagueId)
     {
         Log.Information($"Calling LoadStatInfo for gameId: {gameId}, leagueId: {leagueId}");
-        var queryParameters = Request.Query;
-
         Log.Information($"LoadStatInfo Parameters: {leagueId}, {gameId}");
         var statsJson = await LeagueStatSettingsApi.GetLeagueScoringInformation(gameId, leagueId);
 
@@ -177,11 +121,30 @@ public class YahooApiController : Controller
         }
         
         return Ok("statsJson");
-        // CurrywareLogHandler.AddLog(debugString, LogLevel.Debug);
-        // Log.Debug(debugString);
-        // var playerCommandLineParameters = CommandLineParser.PlayerLoadParametersRest(playerCommandDictionary);
-        // var totalBatches = await PlayerCommand.RunGetPlayersCommand(playerCommandLineParameters);
-        
-        // return Ok(totalBatches);
+    }
+
+    [HttpGet]
+    [Route("LoadStatValueInfo")]
+    public async Task<IActionResult> LoadStatValueInfo([Required] int gameId, [Required] int leagueId)
+    {
+        Log.Information($"Calling LoadStatValueInfo for gameId: {gameId}, leagueId: {leagueId}");
+        var statsValuesJson = await LeagueStatValueApi.GetLeagueStatValueInformation(gameId, leagueId);
+
+        if (statsValuesJson != null)
+        {
+            try
+            {
+                Log.Debug("Writing statsValueJson to StatTopicValue Queue");
+                var kafkaTopic = "StatValueTopic";
+                var kafkaResult = await KafkaProducer.CreateKafkaMessage(kafkaTopic, statsValuesJson);
+                if (kafkaResult)
+                    Log.Information("Wrote JSON to StatTopicValue Queue");
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error Writing to Kafka {ex.Message}");
+            }
+        }
+        return Ok("statsValuesJson");
     }
 }

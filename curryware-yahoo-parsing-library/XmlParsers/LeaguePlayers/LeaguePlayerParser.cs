@@ -37,12 +37,13 @@ internal abstract class LeaguePlayerParser
                 var playerId = 0;
                 var fullName = string.Empty;
                 var url = string.Empty;
-                var status = string.Empty;
+                var status = "Active";
                 var team = string.Empty;
                 var byeWeek = 0;
                 var uniformNumber = 0;
                 var headShot = string.Empty;
                 var primaryPosition = string.Empty;
+                var playerStatusFull = "Active";
 
                 // var node = currentPlayer.DescendantNodes();
                 if (currentPlayer.Element(fantasyNameSpace + "player_id") != null)
@@ -72,6 +73,11 @@ internal abstract class LeaguePlayerParser
                 if (currentPlayer.Element(fantasyNameSpace + "status") != null && playerId < defenseIds)
                 {
                     status = currentPlayer.Element(fantasyNameSpace + "status")!.Value;
+                }
+
+                if (currentPlayer.Element(fantasyNameSpace + "status_full") != null && playerId >= defenseIds)
+                {
+                    playerStatusFull = currentPlayer.Element(fantasyNameSpace + "status_full")!.Value;
                 }
 
                 if (currentPlayer.Element(fantasyNameSpace + "editorial_team_abbr") != null)
@@ -115,6 +121,7 @@ internal abstract class LeaguePlayerParser
                     FullName = fullName,
                     Url = url,
                     Status = status,
+                    PlayerStatusFull = playerStatusFull,
                     Team = team,
                     ByeWeek = byeWeek,
                     UniformNumber = uniformNumber,

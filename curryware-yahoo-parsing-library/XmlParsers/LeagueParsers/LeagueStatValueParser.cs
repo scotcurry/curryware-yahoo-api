@@ -93,8 +93,10 @@ internal class LeagueStatValueParser
             }
         }
 
+        var leagueStatKey = Convert.ToString(gameId) + Convert.ToString(leagueId) + Convert.ToString(statId);
         var leagueStat = new LeagueStatsValueModel
         {
+            LeagueStatKey = Convert.ToInt64(leagueStatKey),
             GameId = gameId,
             LeagueId = leagueId,
             StatId = statId,
