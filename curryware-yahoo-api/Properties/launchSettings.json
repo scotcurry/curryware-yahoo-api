@@ -17,7 +17,7 @@
       "applicationUrl": "http://localhost:5126",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "KAFKA_BOOTSTRAP_SERVER": "localhost:9092",
+        "KAFKA_BOOTSTRAP_SERVER": "kafka.curryware.org:9092",
         "POSTGRES_SERVER": "postgres.curryware.org",
         "POSTGRES_PORT": "5432",
         "POSTGRES_USERNAME": "scot",

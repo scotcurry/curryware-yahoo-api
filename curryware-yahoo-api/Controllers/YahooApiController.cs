@@ -23,6 +23,7 @@ public class YahooApiController : Controller
         return "Controller Result";
     }
 
+    // This code just pulls an OAuthToken.  Used 
     [HttpGet]
     [Route("GetOAuthToken")]
     public async Task<IActionResult> GetOAuthToken()
@@ -146,5 +147,27 @@ public class YahooApiController : Controller
             }
         }
         return Ok("statsValuesJson");
+    }
+    
+    [HttpPost]
+    [Route("AddToKafkaQueue")]
+    public async Task<IActionResult> AddToKafkaQueue(string json)
+    {
+        Log.Information("Adding to Kafka Queue");
+        var kafkaTopic = "DatadogValidationTopic";
+
+        try
+        {
+            var kafkaResult = await KafkaProducer.CreateKafkaMessage(kafkaTopic, json);
+            if (kafkaResult)
+                Log.Information("Wrote JSON to PlayerTopic Queue");
+        }
+        catch (KafkaValidationException kafkaValidationException)
+        {
+            Log.Error(kafkaValidationException.Message);
+            return Ok(kafkaValidationException.Message);
+        }
+        
+        return Ok("Added to Kafka Queue");
     }
 }
