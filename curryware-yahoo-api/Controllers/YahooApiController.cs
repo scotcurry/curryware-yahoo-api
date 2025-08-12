@@ -151,16 +151,18 @@ public class YahooApiController : Controller
     
     [HttpPost]
     [Route("AddToKafkaQueue")]
-    public async Task<IActionResult> AddToKafkaQueue(string json)
+    public async Task<IActionResult> AddToKafkaQueue()
     {
         Log.Information("Adding to Kafka Queue");
         var kafkaTopic = "DatadogValidationTopic";
-
+        
+        using var reader = new StreamReader(Request.Body);
+        var json = await reader.ReadToEndAsync();
         try
         {
             var kafkaResult = await KafkaProducer.CreateKafkaMessage(kafkaTopic, json);
             if (kafkaResult)
-                Log.Information("Wrote JSON to PlayerTopic Queue");
+                Log.Information("Wrote JSON to DataValidation Queue");
         }
         catch (KafkaValidationException kafkaValidationException)
         {
