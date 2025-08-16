@@ -7,8 +7,8 @@ public class GetPlayersTest
     [Fact]
     public async Task GetTwentyFivePlayersTest()
     {
-        const int gameId = 449;
-        const int leagueKey = 483521;
+        const int gameId = 461;
+        const int leagueKey = 394957;
         const int startNumber = 70;
         const string oAuthToken = "NoToken";
 

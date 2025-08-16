@@ -44,6 +44,7 @@ internal abstract class LeaguePlayerParser
                 var headShot = string.Empty;
                 var primaryPosition = string.Empty;
                 var playerStatusFull = "Active";
+                var injuryNote = "NA";
 
                 // var node = currentPlayer.DescendantNodes();
                 if (currentPlayer.Element(fantasyNameSpace + "player_id") != null)
@@ -78,6 +79,11 @@ internal abstract class LeaguePlayerParser
                 if (currentPlayer.Element(fantasyNameSpace + "status_full") != null && playerId >= defenseIds)
                 {
                     playerStatusFull = currentPlayer.Element(fantasyNameSpace + "status_full")!.Value;
+                }
+
+                if (currentPlayer.Element(fantasyNameSpace + "injury_note") != null)
+                {
+                    var injuryNoteElement = currentPlayer.Element(fantasyNameSpace + "injury_note");
                 }
 
                 if (currentPlayer.Element(fantasyNameSpace + "editorial_team_abbr") != null)
@@ -126,7 +132,8 @@ internal abstract class LeaguePlayerParser
                     ByeWeek = byeWeek,
                     UniformNumber = uniformNumber,
                     Position = primaryPosition,
-                    Headshot = headShot
+                    Headshot = headShot,
+                    InjuryNotes = injuryNote
                 };
 
                 playersList.Add(player);
