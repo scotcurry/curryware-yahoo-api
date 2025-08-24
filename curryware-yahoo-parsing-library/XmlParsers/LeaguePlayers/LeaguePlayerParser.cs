@@ -76,14 +76,14 @@ internal abstract class LeaguePlayerParser
                     status = currentPlayer.Element(fantasyNameSpace + "status")!.Value;
                 }
 
-                if (currentPlayer.Element(fantasyNameSpace + "status_full") != null && playerId >= defenseIds)
+                if (currentPlayer.Element(fantasyNameSpace + "status_full") != null)
                 {
                     playerStatusFull = currentPlayer.Element(fantasyNameSpace + "status_full")!.Value;
                 }
 
                 if (currentPlayer.Element(fantasyNameSpace + "injury_note") != null)
                 {
-                    var injuryNoteElement = currentPlayer.Element(fantasyNameSpace + "injury_note");
+                    injuryNote = currentPlayer.Element(fantasyNameSpace + "injury_note")!.Value;
                 }
 
                 if (currentPlayer.Element(fantasyNameSpace + "editorial_team_abbr") != null)
