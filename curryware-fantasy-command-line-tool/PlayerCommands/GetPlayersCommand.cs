@@ -11,7 +11,7 @@ public abstract class PlayerCommand
 {
     public static async Task<int> RunGetPlayersCommand(PlayerCommandLineParameters playerCommandLineParameters)
     {
-        const string kafkaTopic = "PlayerTopic2";
+        const string kafkaTopic = "PlayerTopicDaily";
         var gameId = playerCommandLineParameters.GameId;
         var leagueId = playerCommandLineParameters.LeagueId;
         var playerPosition = playerCommandLineParameters.PlayerPosition;
