@@ -1,4 +1,4 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+﻿FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 LABEL maintainer="scotcurry4@gmail.com"
 
 ## Need to get all of the curryware-yahoo dependencies
@@ -23,7 +23,7 @@ COPY . ./
 
 RUN dotnet publish curryware-yahoo-api/curryware-yahoo-api.csproj -c Release -o /src/publish /p:UseAppHost=false
 
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS publish
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS publish
 WORKDIR /app
 COPY --from=build /src/publish /app
 
