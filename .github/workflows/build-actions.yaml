@@ -12,7 +12,7 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 9.0.x
       - name: Build model-project
         run: dotnet build curryware-data-models/curryware-data-models.csproj --configuration Release
       - name: Build api-project
