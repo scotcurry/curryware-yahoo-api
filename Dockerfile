@@ -9,7 +9,6 @@ COPY curryware-fantasy-command-line-tool/curryware-fantasy-command-line-tool.csp
 COPY curryware-fantasy-command-line-tool-tests/curryware-fantasy-command-line-tool-tests.csproj curryware-fantasy-command-line-tool-tests/
 COPY curryware-kafka-producer-library/curryware-kafka-producer-library.csproj curryware-kafka-producer-library/
 COPY curryware-kafka-producer-library-tests/curryware-kafka-producer-library-tests.csproj curryware-kafka-producer-library-tests/
-COPY curryware-log-handler/curryware-log-handler.csproj curryware-log-handler/
 COPY curryware-postgres-library/curryware-postgres-library.csproj curryware-postgres-library/
 COPY curryware-postgres-library-tests/curryware-postgres-library-tests.csproj curryware-postgres-library-tests/
 COPY curryware-yahoo-api/curryware-yahoo-api.csproj curryware-yahoo-api/
