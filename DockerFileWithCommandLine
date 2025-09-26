@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /app
 
 # Get the solution and all of the projects copied to the image for build
@@ -25,7 +25,7 @@ RUN dotnet publish curryware-yahoo-api/curryware-yahoo-api.csproj -c Release -o 
 RUN dotnet publish curryware-fantasy-command-line-tool/curryware-fantasy-command-line-tool.csproj -o /app/publish/command-line
 
 # Get a new "cleaner" image to run the application
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 EXPOSE 8087
 ENV ASPNETCORE_HTTP_PORTS=8087
