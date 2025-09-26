@@ -66,7 +66,7 @@ public abstract class KafkaProducer
          catch (KafkaValidationException kafkaException)
          {
              // CurrywareLogHandler.AddLog(kafkaException.Message, LogLevel.Error);
-             Log.Error(kafkaException.Message);
+             Log.Error("Kafka Validation Exception: " + kafkaException.Message);
              return false;
          }
      }

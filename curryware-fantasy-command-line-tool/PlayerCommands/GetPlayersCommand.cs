@@ -55,12 +55,14 @@ public abstract class PlayerCommand
             {
                 Log.Debug($"Writing {playersModel.Players?.Count} to JSON ");
                 var justPlayers = JsonSerializer.Serialize(playersModel.Players);
+                Log.Debug("Calling KafkaProducer.CreateKafkaMessage");
                 var kafkaResult = await KafkaProducer.CreateKafkaMessage(kafkaTopic, justPlayers);
                 if (kafkaResult)
                     totalBatches++;
             }
             catch (Exception e)
             {
+                Log.Error("Generic Exception {Message} in RunGetPlayersCommand ", e.Message);
                 Console.WriteLine(e);
                 throw;
             }
